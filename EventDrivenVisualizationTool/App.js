@@ -37,7 +37,7 @@ export default function App() {
 
             width: "80%",
             height: "60%",
-            padding: "20px",
+            padding: "40px",
 
             textAlign: "center",
             marginTop: "20px",
@@ -53,8 +53,17 @@ export default function App() {
             multiple
             action={"https://localhost:3000/"}
             accepts=".c,.cpp"
+            listType='text'
             beforeUpload={(file) => {
-                console.log({ file });
+                //console.log({ file });
+                //return false;
+                const reader = new FileReader();
+                reader.onload = e => {
+                  const fileText = e.target.result;
+                  console.log(fileText);
+                  alert(fileText);
+                };
+                reader.readAsText(file);
                 return false;
             }}
 
