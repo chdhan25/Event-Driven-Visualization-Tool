@@ -17,7 +17,7 @@ export default function App() {
         style = {{
             //Page Properties
             width: "100%",
-            minHeight: "100vh",
+            height: "100vh",
             display: "flex",
             justifyContent: "start",
             alignItems: "center",
