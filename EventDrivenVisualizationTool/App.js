@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-web';
 import { Upload, Button, Flex, message } from 'antd';
 import { useState } from 'react';
+import { parseCCode } from './parsing/parser';
 
 export default function App() {
   //State Variables
@@ -10,6 +11,7 @@ export default function App() {
   const [codePreviewText, setCodePreviewText] = useState("Upload and select a source code file to view its contents here.");
   const [codePreviewTextColor, setCodePreviewTextColor] = useState("black");
   const [codePreviewBGColor, setCodePreviewBGColor] = useState("white");
+  const [parsedData, setParsedData] = useState(null);
   
   return (
     
@@ -70,6 +72,12 @@ export default function App() {
                   const fileText = e.target.result;
                   console.log(fileText);
                   setCodePreviewText(fileText);
+
+                  // parse C code using parser
+                  const parsed = parseCCode(fileText);
+                  console.log("Parsed Data:", parsed);
+                  setParsedData(parsed);
+
                 };
                 reader.readAsText(file);    
 
@@ -157,6 +165,12 @@ export default function App() {
         multiline={true}
       >
       </TextInput>
+      {parsedData && (
+              <div>
+                <h3>Parsed Data:</h3>
+                <pre>{JSON.stringify(parsedData, null, 2)}</pre>
+              </div>
+            )}
     </div>
 
   );
