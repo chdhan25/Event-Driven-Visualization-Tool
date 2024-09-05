@@ -17,6 +17,8 @@ export default function App() {
   const [codePreviewBGColor, setCodePreviewBGColor] = useState("white");
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
+  const [nodes, setNodes] = useState(null);
+  const [edges, setEdges] = useState(null);
 
 
 
@@ -53,6 +55,9 @@ export default function App() {
 
     // console.log(nodes);
     console.log(edges);
+    setEdges(edges);
+    setNodes(nodes);
+
   
     return { nodes, edges };
   }
