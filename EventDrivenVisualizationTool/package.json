@@ -14,13 +14,15 @@
     "expo": "^51.0.26",
     "expo-status-bar": "~1.11.1",
     "firebase": "^10.10.0",
+    "mermaid": "^11.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.6",
     "react-native-web": "~0.19.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@babel/plugin-transform-class-static-block": "^7.24.7"
   },
   "private": true
 }

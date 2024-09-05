@@ -4,6 +4,10 @@ import { TextInput } from 'react-native-web';
 import { Upload, Button, Flex, message } from 'antd';
 import { useState } from 'react';
 import { parseCCode } from './parsing/parser';
+import React, { useEffect } from 'react';
+// import mermaid from 'mermaid';
+// import {Flowchart} from './Flowchart/Flowchart';
+
 
 export default function App() {
   //State Variables
@@ -12,6 +16,51 @@ export default function App() {
   const [codePreviewTextColor, setCodePreviewTextColor] = useState("black");
   const [codePreviewBGColor, setCodePreviewBGColor] = useState("white");
   const [parsedData, setParsedData] = useState(null);
+  const [flowchartData, setFlowchartData] = useState(null);
+  const [nodes, setNodes] = useState(null);
+  const [edges, setEdges] = useState(null);
+
+
+
+  useEffect(() => {
+    if (parsedData) {
+    const data = parsedData;
+    const flowData = generateFlowchartData(data);
+    setFlowchartData(flowData);
+    }
+  }, [parsedData]);
+
+
+
+  function generateFlowchartData(parsedData) {
+    const nodes = [];
+    const edges = [];
+
+    parsedData.isrs.forEach(isr => {
+      nodes.push({ id: isr.type, name: isr.name });
+
+      for (let i =0; i < isr.connections.length; i++) {
+        edges.push({
+          source: isr.type,
+          target: isr.connections[i],
+          label: isr.connections[i],
+        });
+      }
+
+      //implementation for more connection logic for other types of nodes (functions and such) would go below once we have the parser logic for it
+
+    });
+
+    
+
+    // console.log(nodes);
+    console.log(edges);
+    setEdges(edges);
+    setNodes(nodes);
+
+  
+    return { nodes, edges };
+  }
   
   return (
     
@@ -171,6 +220,7 @@ export default function App() {
                 <pre>{JSON.stringify(parsedData, null, 2)}</pre>
               </div>
             )}
+
     </div>
 
   );

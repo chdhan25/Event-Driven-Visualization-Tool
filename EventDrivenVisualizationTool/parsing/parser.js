@@ -15,12 +15,15 @@ const extractISRDetails = (line) => {
   const avrMatch = line.match(/ISR\s*\((.*)\)/);
   const armMatch = line.match(/(\w+_Handler)\s*\(.*\)/);
 
+  let isrDetails = { type: 'Unknown', name: 'Unknown', connections: [] };
+
+
   if (avrMatch) {
-    return { type: 'AVR', name: avrMatch[1].trim() };
+    return isrDetails = { type: 'AVR', name: avrMatch[1].trim(), connections: ['testconnection1', 'testconnection2'] };
   } else if (armMatch) {
-    return { type: 'ARM', name: armMatch[1].trim() };
+    return isrDetails= { type: 'ARM', name: avrMatch[1].trim(), connections: ['testconnection1', 'testconnection2'] };
   } else {
-    return { type: 'Unknown', name: 'Unknown' };
+    return { type: 'Unknown', name: 'Unknown' , connections: [] };
   }
 };
 
