@@ -8,34 +8,6 @@ import React, { useEffect } from 'react';
 // import mermaid from 'mermaid';
 // import {Flowchart} from './Flowchart/Flowchart';
 
-/*  Need to make sure these are ran:
-    npm install @react-navigation/native
-    npm install @react-navifation/native-stack
-    npx expo install react-native-screens react-native-safe-area-context
-
-*/
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import VisualizationSelectionScreen from './Screens/VisualizationSelector';
-import UploadScreen from './Screens/Upload';
-
-const Stack = createNativeStackNavigator();
-
-const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="UploadPage">
-        <Stack.Screen name= "UploadPage" component={Upload} />
-        <Stack.Screen name= "VisualizationScreen" component={VisualizationSelectionScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
-};
-
-// if we move the upload features to a different file we can uncomment this
-//export default App;
-
 
 export default function App() {
   //State Variables
