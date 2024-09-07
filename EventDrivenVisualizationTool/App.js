@@ -13,14 +13,17 @@ import React, { useEffect } from 'react';
     npm install @react-navifation/native-stack
     npx expo install react-native-screens react-native-safe-area-context
 
-*/
-import React from 'react';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import VisualizationSelectionScreen from './Screens/VisualizationSelector';
 import UploadScreen from './Screens/Upload';
 
-const Stack = createNativeStackNavigator();
+*/
+
+//Something in the dependencies is not allowing this to fully work yet 
+//we need to fix the organization and the files installed to the project
+/* const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
@@ -34,7 +37,9 @@ const App = () => {
 };
 
 // if we move the upload features to a different file we can uncomment this
-//export default App;
+//export default App; 
+
+*/
 
 
 export default function App() {
