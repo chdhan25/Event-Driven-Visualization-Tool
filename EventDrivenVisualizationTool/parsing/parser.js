@@ -1,8 +1,5 @@
-// src/parsing/parser.js
-
 // Utility function to check if a line of code contains a likely ISR definition
 const isISRLine = (line) => {
-  // Example patterns for different platforms
   const avrPattern = /ISR\s*\(.*\)/; // Matches AVR-style ISR(TIMER1_OVF_vect)
   const armPattern = /\w+_Handler\s*\(.*\)/; // Matches ARM Cortex-style SysTick_Handler()
 
@@ -11,19 +8,43 @@ const isISRLine = (line) => {
 
 // Utility function to clean and extract relevant details from the ISR line
 const extractISRDetails = (line) => {
-  // Extract ISR name and relevant information
   const avrMatch = line.match(/ISR\s*\((.*)\)/);
   const armMatch = line.match(/(\w+_Handler)\s*\(.*\)/);
 
   let isrDetails = { type: 'Unknown', name: 'Unknown', connections: [] };
 
-
   if (avrMatch) {
-    return isrDetails = { type: 'AVR', name: avrMatch[1].trim(), connections: ['testconnection1', 'testconnection2'] };
+    return {
+      type: 'AVR',
+      name: avrMatch[1].trim(),
+      connections: ['testconnection1', 'testconnection2'],
+    };
   } else if (armMatch) {
-    return isrDetails= { type: 'ARM', name: avrMatch[1].trim(), connections: ['testconnection1', 'testconnection2'] };
+    return {
+      type: 'ARM',
+      name: armMatch[1].trim(),
+      connections: ['testconnection1', 'testconnection2'],
+    };
   } else {
-    return { type: 'Unknown', name: 'Unknown' , connections: [] };
+    return { type: 'Unknown', name: 'Unknown', connections: [] };
+  }
+};
+
+// Utility function to map a line to flowchart elements
+const mapToFlowchartElement = (line) => {
+  // Skip empty or comment lines
+  if (line.trim() === '' || line.startsWith('//')) {
+    return null; // Ignore empty lines or comment lines
+  }
+
+  if (isISRLine(line)) {
+    return { type: 'Process', description: 'ISR Definition' };
+  } else if (line.includes('return')) {
+    return { type: 'End', description: 'Return Statement' };
+  } else if (line.trim() === '{' || line.trim() === '}') {
+    return null; // Ignore block delimiters
+  } else {
+    return { type: 'Process', description: 'Operation or Assignment' };
   }
 };
 
@@ -32,11 +53,10 @@ export const parseCCode = (code) => {
   const lines = code.split('\n');
   let parsedData = {
     isrs: [],
-    functions: [],
-    controlFlows: [],
+    flowchartElements: [], // Collect flowchart elements
   };
 
-  lines.forEach(line => {
+  lines.forEach((line) => {
     const trimmedLine = line.trim();
 
     // Check for ISR functions
@@ -45,7 +65,11 @@ export const parseCCode = (code) => {
       parsedData.isrs.push(isrDetails);
     }
 
-    // Add more parsing logic for functions, control flows, etc.
+    // Map line to flowchart element
+    const flowchartElement = mapToFlowchartElement(trimmedLine);
+    if (flowchartElement) {
+      parsedData.flowchartElements.push(flowchartElement);
+    }
   });
 
   return parsedData;
