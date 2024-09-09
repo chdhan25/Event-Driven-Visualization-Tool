@@ -3,187 +3,138 @@ import { StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-web';
 import { Upload, Button, Flex, message } from 'antd';
 import { useState } from 'react';
-import { parseCCode } from './parsing/parser'; // Your parsing function
-import Flowchart from './flowchart/Flowchart'; // Import Flowchart component
+import { parseCCode } from './parsing/parser';
 import React, { useEffect } from 'react';
+// import mermaid from 'mermaid';
+// import {Flowchart} from './Flowchart/Flowchart';
+
 
 export default function App() {
+  //State Variables
   const [uploaderBottomPadding, setUploaderBottomPadding] = useState(20);
-  const [codePreviewText, setCodePreviewText] = useState(
-    'Upload and select a source code file to view its contents here.'
-  );
-  const [codePreviewTextColor, setCodePreviewTextColor] = useState('black');
-  const [codePreviewBGColor, setCodePreviewBGColor] = useState('white');
+  const [codePreviewText, setCodePreviewText] = useState("Upload and select a source code file to view its contents here.");
+  const [codePreviewTextColor, setCodePreviewTextColor] = useState("black");
+  const [codePreviewBGColor, setCodePreviewBGColor] = useState("white");
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
   const [nodes, setNodes] = useState(null);
   const [edges, setEdges] = useState(null);
 
+
+
   useEffect(() => {
     if (parsedData) {
-      console.log('Parsed Data:', parsedData);
-      const flowData = generateFlowchartData(parsedData);
-      console.log('Generated Nodes:', flowData.nodes);
-      console.log('Generated Edges:', flowData.edges);
-      setNodes(flowData.nodes);
-      setEdges(flowData.edges);
+    const data = parsedData;
+    const flowData = generateFlowchartData(data);
+    setFlowchartData(flowData);
     }
   }, [parsedData]);
 
-  // Function to generate flowchart data (Replace with your actual logic)
+
+
   function generateFlowchartData(parsedData) {
     const nodes = [];
     const edges = [];
-    const seenNodes = new Set();
-    const seenEdges = new Set();
 
-    parsedData.isrs.forEach((isr, index) => {
-      if (!seenNodes.has(isr.name)) {
-        nodes.push({
-          id: isr.name,
-          data: { label: isr.name },
-          position: { x: 250 * index, y: 0 },
-          type: 'default',
+    parsedData.isrs.forEach(isr => {
+      nodes.push({ id: isr.type, name: isr.name });
+
+      for (let i =0; i < isr.connections.length; i++) {
+        edges.push({
+          source: isr.type,
+          target: isr.connections[i],
+          label: isr.connections[i],
         });
-        seenNodes.add(isr.name);
       }
 
-      isr.connections.forEach((connection, connIndex) => {
-        const edgeId = `edge-${isr.name}-${connection}`;
-        if (!seenEdges.has(edgeId)) {
-          edges.push({
-            id: edgeId,
-            source: isr.name,
-            target: `node-${connIndex}`,
-            animated: true,
-            label: `Connection: ${connection}`,
-          });
-          seenEdges.add(edgeId);
-        }
-      });
+      //implementation for more connection logic for other types of nodes (functions and such) would go below once we have the parser logic for it
+
     });
 
-    parsedData.flowchartElements.forEach((element, index) => {
-      const nodeId = `node-${index}`;
-      if (!seenNodes.has(nodeId)) {
-        nodes.push({
-          id: nodeId,
-          data: { label: element.description },
-          position: { x: 250 * index, y: 100 },
-          type: 'default',
-        });
-        seenNodes.add(nodeId);
-      }
+    
 
-      if (index > 0) {
-        const edgeId = `edge-${index}`;
-        if (!seenEdges.has(edgeId)) {
-          edges.push({
-            id: edgeId,
-            source: `node-${index - 1}`,
-            target: nodeId,
-            animated: true,
-            label: 'Next Step',
-          });
-          seenEdges.add(edgeId);
-        }
-      }
-    });
+    // console.log(nodes);
+    console.log(edges);
+    setEdges(edges);
+    setNodes(nodes);
 
+  
     return { nodes, edges };
   }
-
-  // File upload handling
-  const beforeUpload = (file) => {
-    message.success(`File "${file.name}" uploaded successfully.`);
-    setUploaderBottomPadding(uploaderBottomPadding + 30);
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const fileText = e.target.result;
-      setCodePreviewText(fileText);
-
-      // Parse C code using parser
-      const parsed = parseCCode(fileText);
-      setParsedData(parsed);
-    };
-    reader.readAsText(file);
-
-    return false; // Prevent automatic upload
-  };
-
-  const onRemove = (file) => {
-    setUploaderBottomPadding(uploaderBottomPadding - 30);
-    message.warning(`File "${file.name}" deleted.`);
-  };
-
+  
   return (
+    
     <div
-      style={{
-        width: '100%',
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'start',
-        alignItems: 'center',
-        flexDirection: 'column',
-        backgroundColor: '#9FCCE4',
-        overflow: 'auto',
-      }}
+        style = {{
+            //Page Properties
+            width: "100%",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "start",
+            alignItems: "center",
+            flexDirection: "column",
+            backgroundColor: "#9FCCE4",
+            overflow: 'auto',
+        }}
     >
-      <div
-        id="heading"
-        style={{
-          fontSize: '20px',
-          height: '10%',
-          textAlign: 'center',
-          marginBottom: '10px',
+      
+      {/* Page Heading Properties */}
+      <div id ="heading"
+        style = {{
+            fontSize: "20px",
+            height: "10%",
+            textAlign: "center",
+            marginBottom: "10px",
         }}
       >
         <h1>Event Driven Visualization Tool</h1>
       </div>
       {/* File Upload Component */}
-      <div
-        id="upload"
-        style={{
-          width: '80%',
-          height: '60%',
-          padding: '20px',
-          paddingBottom: uploaderBottomPadding,
-          textAlign: 'center',
-          marginTop: '20px',
-          backgroundColor: 'white',
-          borderRadius: '20px',
+      <div id = "upload"
+        style = {{
+            width: "80%",
+            height: "60%",
+            padding: "20px",
+            paddingBottom: uploaderBottomPadding,
+
+            textAlign: "center",
+            marginTop: "20px",
+            backgroundColor: "white",
+            borderRadius: "20px",
         }}
       >
-        <Upload.Dragger
-          multiple
-          action={'https://localhost:3000/'} //URL to upload files to
-          accepts=".c,.cpp"
-          listType="text"
-          beforeUpload={(file) => {
-            message.success(`File "${file.name}" uploaded successfully.`);
-            //Increase the bottom padding length of the containing div after uploading a file
-            setUploaderBottomPadding(uploaderBottomPadding + 30);
+          <Upload.Dragger
+            multiple
+            action={"https://localhost:3000/"} //URL to upload files to
+            accepts=".c,.cpp"
+            listType='text'
 
-            //Read input file, send results to AI to create visualization flowchart
-            //Give special interest to visualizing interrupt events
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const fileText = e.target.result;
-              console.log(fileText);
-              setCodePreviewText(fileText);
+            beforeUpload={(file) => {
+                message.success(`File "${file.name}" uploaded successfully.`);
+                //Increase the bottom padding length of the containing div after uploading a file
+                setUploaderBottomPadding(uploaderBottomPadding + 30);
 
-              // parse C code using parser
-              const parsed = parseCCode(fileText);
-              console.log('Parsed Data:', parsed);
-              setParsedData(parsed);
-            };
-            reader.readAsText(file);
+                //Read input file, send results to AI to create visualization flowchart
+                //Give special interest to visualizing interrupt events
+                const reader = new FileReader();
+                reader.onload = e => {
+                  const fileText = e.target.result;
+                  console.log(fileText);
+                  setCodePreviewText(fileText);
 
-            return false;
-          }}
-          //To be used after implementing proper uploading
-          /*onChange={(response) => {
+                  // parse C code using parser
+                  const parsed = parseCCode(fileText);
+                  console.log("Parsed Data:", parsed);
+                  setParsedData(parsed);
+
+                };
+                reader.readAsText(file);    
+
+                return false;
+            }}
+
+            //To be used after implementing proper uploading
+            /*onChange={(response) => {
               if (response.file.status !== 'uploading') {
                 console.log(response.file, response.fileList);
               }
@@ -194,17 +145,17 @@ export default function App() {
               }
             }}*/
 
-          onRemove={(file) => {
-            //Decrease the bottom padding length of the containing div after removing a file
-            setUploaderBottomPadding(uploaderBottomPadding - 30);
-            message.warning(`File "${file.name}" deleted.`);
-          }}
+            onRemove={(file) => {
+              //Decrease the bottom padding length of the containing div after removing a file
+              setUploaderBottomPadding(uploaderBottomPadding - 30);
+              message.warning(`File "${file.name}" deleted.`);
+            }}
 
-          //To be used after implementing proper uploading
-          /*Ideally, after a successful file upload, a link corresponding to the new file 
+            //To be used after implementing proper uploading
+            /*Ideally, after a successful file upload, a link corresponding to the new file 
             should appear which allows the user to switch the text in the 
             code preview pane to that of the selected file.*/
-          /*onPreview={(file) => {
+            /*onPreview={(file) => {
               const reader = new FileReader();
                 reader.onload = e => {
                   const fileText = e.target.result;
@@ -212,12 +163,14 @@ export default function App() {
                 };
                 reader.readAsText(file);  
             }}*/
-        >
-          <p> Drag files here </p>
-          <p> OR </p>
 
-          <Button> Click Upload </Button>
-        </Upload.Dragger>
+            >
+            <p> Drag files here </p>
+            <p> OR </p>
+            
+            <Button> Click Upload </Button>
+          </Upload.Dragger>
+          
       </div>
       {/* Code preview pane */}
       {/* Scrollable text view which shows text of uploaded code files */}
@@ -225,45 +178,51 @@ export default function App() {
       representing the new file, clicking on the tab for a specific file will change the text inside
       the preview pane to that file's text */}
       <h2>Code Preview Pane (Editable)</h2>
+
       <Button
         onClick={() => {
-          setCodePreviewTextColor('black');
-          setCodePreviewBGColor('white');
+          setCodePreviewTextColor("black");
+          setCodePreviewBGColor("white");
         }}
-      >
-        Light Mode
-      </Button>
+      >Light Mode Display</Button>
+
       <Button
         onClick={() => {
-          setCodePreviewTextColor('white');
-          setCodePreviewBGColor('black');
+          setCodePreviewTextColor("white");
+          setCodePreviewBGColor("black");
         }}
-      >
-        Dark Mode
-      </Button>
+      >Dark Mode Display</Button>
+
       <TextInput
-        style={{
-          width: '80%',
-          height: '50%',
-          minHeight: '200px',
-          padding: '20px',
+        style = {{
+          width: "80%",
+          height: "50%",
+          minHeight: "200px",
+          padding: "20px",
           overflow: 'auto',
-          textAlign: 'left',
-          marginTop: '5px',
-          marginBottom: '5px',
+  
+          textAlign: "left",
+          marginTop: "5px",
+          marginBottom: "5px",
           backgroundColor: codePreviewBGColor,
           fontFamily: 'monospace',
           color: codePreviewTextColor,
           whiteSpace: 'pre-line',
         }}
+        onChangeText={setCodePreviewText}
         value={codePreviewText}
         multiline={true}
-        editable={false}
-      />
-      {/* Flowchart rendering */}
-      {nodes && edges && nodes.length > 0 && edges.length > 0 && (
-        <Flowchart nodes={nodes} edges={edges} />
-      )}
+      >
+      </TextInput>
+      {parsedData && (
+              <div>
+                <h3>Parsed Data:</h3>
+                <pre>{JSON.stringify(parsedData, null, 2)}</pre>
+              </div>
+            )}
+
     </div>
+
   );
 }
+
