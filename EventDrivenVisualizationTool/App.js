@@ -1,20 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-web';
-import { Upload, Button, message } from 'antd';
-import { useState, useEffect } from 'react';
+import { Upload, Button, Flex, message } from 'antd';
+import { useState } from 'react';
 import { parseCCode } from './parsing/parser'; // Your parsing function
 import Flowchart from './flowchart/Flowchart'; // Import Flowchart component
+import React, { useEffect } from 'react';
 
 export default function App() {
-  const [parsedData, setParsedData] = useState(null);
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
+  const [uploaderBottomPadding, setUploaderBottomPadding] = useState(20);
   const [codePreviewText, setCodePreviewText] = useState(
     'Upload and select a source code file to view its contents here.'
   );
   const [codePreviewTextColor, setCodePreviewTextColor] = useState('black');
   const [codePreviewBGColor, setCodePreviewBGColor] = useState('white');
-  const [uploaderBottomPadding, setUploaderBottomPadding] = useState(20);
+  const [parsedData, setParsedData] = useState(null);
+  const [flowchartData, setFlowchartData] = useState(null);
+  const [nodes, setNodes] = useState(null);
+  const [edges, setEdges] = useState(null);
 
   useEffect(() => {
     if (parsedData) {
@@ -152,20 +155,76 @@ export default function App() {
           borderRadius: '20px',
         }}
       >
-        {/* <<<<<<< flowchart */}
         <Upload.Dragger
-          multiple={false}
-          beforeUpload={beforeUpload}
-          onRemove={onRemove}
+          multiple
+          action={'https://localhost:3000/'} //URL to upload files to
+          accepts=".c,.cpp"
           listType="text"
+          beforeUpload={(file) => {
+            message.success(`File "${file.name}" uploaded successfully.`);
+            //Increase the bottom padding length of the containing div after uploading a file
+            setUploaderBottomPadding(uploaderBottomPadding + 30);
+
+            //Read input file, send results to AI to create visualization flowchart
+            //Give special interest to visualizing interrupt events
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const fileText = e.target.result;
+              console.log(fileText);
+              setCodePreviewText(fileText);
+
+              // parse C code using parser
+              const parsed = parseCCode(fileText);
+              console.log('Parsed Data:', parsed);
+              setParsedData(parsed);
+            };
+            reader.readAsText(file);
+
+            return false;
+          }}
+          //To be used after implementing proper uploading
+          /*onChange={(response) => {
+              if (response.file.status !== 'uploading') {
+                console.log(response.file, response.fileList);
+              }
+              if (response.file.status === 'done') {
+                message.success(`File "${response.file.name}" uploaded successfully.`);
+              } else if (response.file.status === 'error') {
+                message.error(`Upload of File "${response.file.name}" has failed.`)
+              }
+            }}*/
+
+          onRemove={(file) => {
+            //Decrease the bottom padding length of the containing div after removing a file
+            setUploaderBottomPadding(uploaderBottomPadding - 30);
+            message.warning(`File "${file.name}" deleted.`);
+          }}
+
+          //To be used after implementing proper uploading
+          /*Ideally, after a successful file upload, a link corresponding to the new file 
+            should appear which allows the user to switch the text in the 
+            code preview pane to that of the selected file.*/
+          /*onPreview={(file) => {
+              const reader = new FileReader();
+                reader.onload = e => {
+                  const fileText = e.target.result;
+                  setCodePreviewText(fileText);
+                };
+                reader.readAsText(file);  
+            }}*/
         >
-          <p> Drag and drop your C code file here </p>
+          <p> Drag files here </p>
           <p> OR </p>
-          <Button> Click to Upload </Button>
+
+          <Button> Click Upload </Button>
         </Upload.Dragger>
       </div>
       {/* Code preview pane */}
-      <h2>Code Preview Pane</h2>
+      {/* Scrollable text view which shows text of uploaded code files */}
+      {/* WANT: Whenever a new code file is uploaded, a new tab is created above the code preview
+      representing the new file, clicking on the tab for a specific file will change the text inside
+      the preview pane to that file's text */}
+      <h2>Code Preview Pane (Editable)</h2>
       <Button
         onClick={() => {
           setCodePreviewTextColor('black');
@@ -202,7 +261,7 @@ export default function App() {
         editable={false}
       />
       {/* Flowchart rendering */}
-      {nodes.length > 0 && edges.length > 0 && (
+      {nodes && edges && nodes.length > 0 && edges.length > 0 && (
         <Flowchart nodes={nodes} edges={edges} />
       )}
     </div>
