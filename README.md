@@ -5,6 +5,8 @@ This tool can automatically convert C and C++ source code files into flowcharts 
 ## Version 0.1.0
 ### New Features
 * Added functionality to upload '.c' source code files to cloud storage supported by Google Firebase.
+* Create a flowchart based on user uploaded '.c' source code file
+* Added pop-up messages detailing successful upload
 ### Bug Fixes
 * The code preview shown upon uploading a source code file to the application has been improved. The code now appears in an editable code preview pane instead of an alert box.
 * The divider containing the upload dragger will now grow and shrink appropriately when code files are added to or removed from the upload list.
