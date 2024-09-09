@@ -1,33 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { TextInput } from 'react-native-web';
-// <<<<<<< flowchart
 import { Upload, Button, message } from 'antd';
 import { useState, useEffect } from 'react';
 import { parseCCode } from './parsing/parser'; // Your parsing function
 import Flowchart from './flowchart/Flowchart'; // Import Flowchart component
 
 export default function App() {
-  // =======
-  // import { Upload, Button, Flex, message } from 'antd';
-  // import { useState } from 'react';
-  // import { initializeApp } from 'firebase/app';
-  // import { getStorage, ref, uploadBytes, uploadBytesResumable, uploadString, getDownloadURL } from 'firebase/storage';
-  // import { firebaseConfig } from './firebase';
-  // import { parseCCode } from './parsing/parser';
-  // import React, { useEffect } from 'react';
-  // // import mermaid from 'mermaid';
-  // // import {Flowchart} from './Flowchart/Flowchart';
-
-  // export default function App() {
-  //   //State Variables
-  //   const [uploaderBottomPadding, setUploaderBottomPadding] = useState(20);
-  //   const [codePreviewText, setCodePreviewText] = useState("Upload and select a source code file to view its contents here.");
-  //   const [fileTitle, setFileTitle] = useState("Title.c");
-  //   const [codePreviewTextColor, setCodePreviewTextColor] = useState("black");
-  //   const [codePreviewBGColor, setCodePreviewBGColor] = useState("white");
-
-  //   const app = initializeApp(firebaseConfig);
-  // >>>>>>> main
   const [parsedData, setParsedData] = useState(null);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
@@ -185,77 +163,6 @@ export default function App() {
           <p> OR </p>
           <Button> Click to Upload </Button>
         </Upload.Dragger>
-        {/* ======= */}
-        {/* <Upload.Dragger
-            multiple
-            //action={"gs://event-driven-visualization.appspot.com"} //URL to upload files to
-            accepts=".c,.cpp"
-            listType='text'
-
-            beforeUpload={(file) => {
-                message.success(`File "${file.name}" uploaded to application successfully.`);
-                //Increase the bottom padding length of the containing div after uploading a file
-                setUploaderBottomPadding(uploaderBottomPadding + 30);
-                setFileTitle(file.name);
-
-                //Read input file, send results to AI to create visualization flowchart
-                //Give special interest to visualizing interrupt events
-                const reader = new FileReader();
-                reader.onload = e => {
-                  const fileText = e.target.result;
-                  console.log(fileText);
-                  setCodePreviewText(fileText);
-
-                  // parse C code using parser
-                  const parsed = parseCCode(fileText);
-                  console.log("Parsed Data:", parsed);
-                  setParsedData(parsed);
-
-                };
-                reader.readAsText(file);  
-
-                return false;
-            }} */}
-
-        {/* //To be used after implementing proper uploading
-            /*onChange={(response) => {
-              if (response.file.status !== 'uploading') {
-                console.log(response.file, response.fileList);
-              }
-              if (response.file.status === 'done') {
-                message.success(`File "${response.file.name}" uploaded successfully.`);
-              } else if (response.file.status === 'error') {
-                message.error(`Upload of File "${response.file.name}" has failed.`)
-              }
-            }}*/}
-
-        {/* onRemove={(file) => {
-              //Decrease the bottom padding length of the containing div after removing a file
-              setUploaderBottomPadding(uploaderBottomPadding - 30);
-              message.warning(`File "${file.name}" deleted.`);
-            }} */}
-
-        {/* //To be used after implementing proper uploading
-            /*Ideally, after a successful file upload, a link corresponding to the new file 
-            should appear which allows the user to switch the text in the 
-            code preview pane to that of the selected file.*/
-        /*onPreview={(file) => {
-              const reader = new FileReader();
-                reader.onload = e => {
-                  const fileText = e.target.result;
-                  setCodePreviewText(fileText);
-                };
-                reader.readAsText(file);  
-            }}*/}
-
-        {/* >
-            <p> Drag files here </p>
-            <p> OR </p> */}
-
-        {/* <Button> Click Upload </Button>
-          </Upload.Dragger>
-          
->>>>>>> main */}
       </div>
       {/* Code preview pane */}
       <h2>Code Preview Pane</h2>
@@ -292,53 +199,12 @@ export default function App() {
         }}
         value={codePreviewText}
         multiline={true}
-        // <<<<<<< flowchart
         editable={false}
       />
       {/* Flowchart rendering */}
       {nodes.length > 0 && edges.length > 0 && (
         <Flowchart nodes={nodes} edges={edges} />
       )}
-      {/* ======= */}
-      {/* >
-      </TextInput> */}
-      {/* Input name of file to be uploaded to cloud storage here (title should end with extension ".c")
-      <input 
-      value = {fileTitle}
-      onChange={e => setFileTitle(e.target.value)}
-      /> */}
-      {/* Upload text button */}
-      {/* <Button
-      onClick={() => {
-        const storage = getStorage();
-        const storageRef = ref(storage, `Files/"${fileTitle}"`);
-        const stringData = codePreviewText;
-        const blob = new Blob([stringData], { type: 'C Source File' }); // Create a Blob from the string
-
-        const uploadTask = uploadBytesResumable(storageRef, blob);
-      
-        uploadTask.on('state_changed', (snapshot) => { */}
-      {/* // Handle upload progress */}
-      {/* }, (error) => { */}
-      {/* // Handle upload errors */}
-      {/* }, () => { */}
-      {/* // Handle successful upload */}
-      {/* getDownloadURL(storageRef).then((downloadURL) => {
-            console.log('String uploaded successfully:', downloadURL);
-            message.success(`File "${fileTitle}" uploaded to cloud storage successfully! Check the browser console for file URL.`);
-          }); */}
-      {/* });
-      }} */}
-      {/* >
-        Upload Current Text to Cloud Storage
-      </Button>
-      {parsedData && ( */}
-      {/* <div>
-                <h3>Parsed Data:</h3>
-                <pre>{JSON.stringify(parsedData, null, 2)}</pre>
-              </div>
-            )} */}
-      {/* >>>>>>> main */}
     </div>
   );
 }
