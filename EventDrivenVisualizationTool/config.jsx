@@ -1,4 +1,4 @@
-// // Import the functions you need from the SDKs you need
+// /* /* // Import the functions you need from the SDKs you need
 // import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 // //import { getStorage } from "firebase/storage";
@@ -39,7 +39,7 @@
 // const db = getDatabase(app);
 
 // // Get a reference to the storage service, which is used to create references in your storage bucket
-// const storage = getStorage();
+// //export const storage = getStorage();
 
 // // Create a storage reference from our storage service
-// const storageRef = ref(storage);
+// //export const storageRef = ref(storage);
