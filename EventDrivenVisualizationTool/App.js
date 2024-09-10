@@ -3,23 +3,18 @@ import { StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-web';
 import { Upload, Button, Flex, message } from 'antd';
 import { useState } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getStorage, ref, uploadBytes, uploadBytesResumable, uploadString, getDownloadURL } from 'firebase/storage';
-import { firebaseConfig } from './firebase';
 import { parseCCode } from './parsing/parser';
 import React, { useEffect } from 'react';
 // import mermaid from 'mermaid';
 // import {Flowchart} from './Flowchart/Flowchart';
 
+
 export default function App() {
   //State Variables
   const [uploaderBottomPadding, setUploaderBottomPadding] = useState(20);
   const [codePreviewText, setCodePreviewText] = useState("Upload and select a source code file to view its contents here.");
-  const [fileTitle, setFileTitle] = useState("Title.c");
   const [codePreviewTextColor, setCodePreviewTextColor] = useState("black");
   const [codePreviewBGColor, setCodePreviewBGColor] = useState("white");
-
-  const app = initializeApp(firebaseConfig);
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
   const [nodes, setNodes] = useState(null);
@@ -110,15 +105,14 @@ export default function App() {
       >
           <Upload.Dragger
             multiple
-            //action={"gs://event-driven-visualization.appspot.com"} //URL to upload files to
+            action={"https://localhost:3000/"} //URL to upload files to
             accepts=".c,.cpp"
             listType='text'
 
             beforeUpload={(file) => {
-                message.success(`File "${file.name}" uploaded to application successfully.`);
+                message.success(`File "${file.name}" uploaded successfully.`);
                 //Increase the bottom padding length of the containing div after uploading a file
                 setUploaderBottomPadding(uploaderBottomPadding + 30);
-                setFileTitle(file.name);
 
                 //Read input file, send results to AI to create visualization flowchart
                 //Give special interest to visualizing interrupt events
@@ -134,7 +128,7 @@ export default function App() {
                   setParsedData(parsed);
 
                 };
-                reader.readAsText(file);  
+                reader.readAsText(file);    
 
                 return false;
             }}
@@ -220,44 +214,13 @@ export default function App() {
         multiline={true}
       >
       </TextInput>
-
-      Input name of file to be uploaded to cloud storage here (title should end with extension ".c")
-      <input 
-      value = {fileTitle}
-      onChange={e => setFileTitle(e.target.value)}
-      />
-
-      {/* Upload text button */}
-      <Button
-      onClick={() => {
-        const storage = getStorage();
-        const storageRef = ref(storage, `Files/"${fileTitle}"`);
-        const stringData = codePreviewText;
-        const blob = new Blob([stringData], { type: 'C Source File' }); // Create a Blob from the string
-
-        const uploadTask = uploadBytesResumable(storageRef, blob);
-      
-        uploadTask.on('state_changed', (snapshot) => {
-          // Handle upload progress
-        }, (error) => {
-          // Handle upload errors
-        }, () => {
-          // Handle successful upload
-          getDownloadURL(storageRef).then((downloadURL) => {
-            console.log('String uploaded successfully:', downloadURL);
-            message.success(`File "${fileTitle}" uploaded to cloud storage successfully! Check the browser console for file URL.`);
-          });
-        });
-      }}
-      >
-        Upload Current Text to Cloud Storage
-      </Button>
       {parsedData && (
               <div>
                 <h3>Parsed Data:</h3>
                 <pre>{JSON.stringify(parsedData, null, 2)}</pre>
               </div>
             )}
+
     </div>
 
   );
