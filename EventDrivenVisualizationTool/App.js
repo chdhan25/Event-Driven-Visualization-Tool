@@ -8,6 +8,10 @@ import React, { useEffect } from 'react';
 // import mermaid from 'mermaid';
 // import {Flowchart} from './Flowchart/Flowchart';
 
+// import { initializeApp } from 'firebase/app';
+// import { getStorage, ref, uploadBytes, uploadBytesResumable, uploadString, getDownloadURL } from 'firebase/storage';
+// import { firebaseConfig } from './firebase';
+
 
 export default function App() {
   //State Variables
@@ -15,12 +19,13 @@ export default function App() {
   const [codePreviewText, setCodePreviewText] = useState("Upload and select a source code file to view its contents here.");
   const [codePreviewTextColor, setCodePreviewTextColor] = useState("black");
   const [codePreviewBGColor, setCodePreviewBGColor] = useState("white");
+  // const [fileTitle, setFileTitle] = useState("Title.c");
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
   const [nodes, setNodes] = useState(null);
   const [edges, setEdges] = useState(null);
 
-
+  // const app = initializeApp(firebaseConfig);
 
   useEffect(() => {
     if (parsedData) {
@@ -110,9 +115,10 @@ export default function App() {
             listType='text'
 
             beforeUpload={(file) => {
-                message.success(`File "${file.name}" uploaded successfully.`);
+                message.success(`Source code "${file.name}" uploaded to code pane successfully.`);
                 //Increase the bottom padding length of the containing div after uploading a file
                 setUploaderBottomPadding(uploaderBottomPadding + 30);
+                // setFileTitle(file.name);
 
                 //Read input file, send results to AI to create visualization flowchart
                 //Give special interest to visualizing interrupt events
@@ -193,6 +199,17 @@ export default function App() {
         }}
       >Dark Mode Display</Button>
 
+      <Button
+        onClick={() => {
+          // parse C code using parser
+          const parsed = parseCCode(codePreviewText);
+          console.log("Parsed Data:", parsed);
+          setParsedData(parsed);
+        }}
+      >
+        Reparse Text
+      </Button>
+
       <TextInput
         style = {{
           width: "80%",
@@ -213,6 +230,41 @@ export default function App() {
         value={codePreviewText}
         multiline={true}
       >
+
+      {/* Input name of file to be uploaded to cloud storage here (title should not have an extension at the end)
+      <input 
+      value = {fileTitle}
+      onChange={e => setFileTitle(e.target.value)}
+      /> */}
+
+      {/* Upload text button */}
+      {/* <Button
+      onClick={() => {
+        const storage = getStorage();
+        const storageRef = ref(storage, `C_Source_Code_Files/"${fileTitle}"`);
+        const stringData = codePreviewText;
+        const blob = new Blob([stringData], { type: 'C Source File' }); // Create a Blob from the string
+
+        const uploadTask = uploadBytesResumable(storageRef, blob);
+
+        uploadTask.on('state_changed', (snapshot) => {
+          // Handle upload progress
+        }, (error) => {
+          // Handle upload errors
+        }, () => {
+          // Handle successful upload
+          getDownloadURL(storageRef).then((downloadURL) => {
+            console.log('String uploaded successfully:', downloadURL);
+            message.success(`File "${fileTitle}" uploaded to cloud storage successfully! Check the browser console for file URL.`);
+          });
+        });
+      }}
+      >
+        Upload Current Text to Cloud Storage as .c File
+      </Button> */}
+
+      
+
       </TextInput>
       {parsedData && (
               <div>
