@@ -9,7 +9,7 @@ import React, { useEffect } from 'react';
 // import {Flowchart} from './Flowchart/Flowchart';
 
 import { initializeApp } from 'firebase/app';
-import { getStorage, ref, uploadBytes, uploadBytesResumable, uploadString, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, uploadBytesResumable, uploadString, getDownloadURL, listAll } from 'firebase/storage';
 import { firebaseConfig } from './firebase';
 
 
@@ -19,7 +19,8 @@ export default function App() {
   const [codePreviewText, setCodePreviewText] = useState("Upload and select a source code file to view its contents here.");
   const [codePreviewTextColor, setCodePreviewTextColor] = useState("black");
   const [codePreviewBGColor, setCodePreviewBGColor] = useState("white");
-  const [fileTitle, setFileTitle] = useState("Code");
+  const [uploadfileTitle, setUploadFileTitle] = useState("Code");
+  const [downloadFileTitle, setDownloadFileTitle] = useState("Old_Code");
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
   const [nodes, setNodes] = useState(null);
@@ -179,6 +180,169 @@ export default function App() {
           </Upload.Dragger>
           
       </div>
+
+      <h2>List Source Code Files Saved on Cloud</h2>
+
+      <Button
+        style = {{
+          marginBottom: "5px"
+        }}
+        onClick={() => {
+          const storage = getStorage();
+          const cSource = ref(storage, 'C_Source_Code_Files');
+          // Find all the prefixes and items.
+          listAll(cSource)
+          .then((res) => {
+            res.prefixes.forEach((folderRef) => {
+              // All the prefixes under listRef.
+              // You may call listAll() recursively on them.
+              console.log('Prefix:');
+              console.log(folderRef.name);
+            });
+            res.items.forEach((itemRef) => {
+              // All the items under listRef.
+              console.log('Item:');
+              console.log(itemRef.name);
+            });
+            message.info(`Code File Names Printed to Browser Console`);
+          }).catch((error) => {
+            // Uh-oh, an error occurred!
+            message.error(`An error has occured during list retrieval`);
+          });
+        }}
+      >List C Source Files</Button>
+
+      <Button
+        onClick={() => {
+          const storage = getStorage();
+          const cPlusPlusSource = ref(storage, 'CPlusPlus_Source_Code_Files');
+          // Find all the prefixes and items.
+          listAll(cPlusPlusSource)
+          .then((res) => {
+            res.prefixes.forEach((folderRef) => {
+              // All the prefixes under listRef.
+              // You may call listAll() recursively on them.
+              console.log('Prefix:');
+              console.log(folderRef.name);
+            });
+            res.items.forEach((itemRef) => {
+              // All the items under listRef.
+              console.log('Item:');
+              console.log(itemRef.name);
+            });
+            message.info(`Code File Names Printed to Browser Console`);
+          }).catch((error) => {
+            // Uh-oh, an error occurred!
+            message.error(`An error has occured during list retrieval`);
+          });
+        }}
+      >List C++ Source Files</Button>
+
+      <h2>Download Source Files</h2>
+      Input name of source code file to be downloaded and displayed in the code preview pane below. File name must include ".c" or ".cpp" extension.
+      <input 
+      value = {downloadFileTitle}
+      onChange={e => setDownloadFileTitle(e.target.value)}
+      />
+
+      <Button
+        style = {{
+          margin: "5px"
+        }}
+        onClick={() => {
+          const storage = getStorage();
+          const downloadPath = ref(storage, `C_Source_Code_Files/${downloadFileTitle}`);
+          console.log(downloadPath);
+          console.log(getDownloadURL(downloadPath));
+          getDownloadURL(downloadPath)
+          .then((url) => {
+            console.log(url);
+            // Insert url into an <img> tag to "download"
+            fetch(url)
+            .then((response) => response.text())
+            .then((response) => {
+              console.log(response);
+              setCodePreviewText(response);
+              message.success(`File "${downloadFileTitle}" downloaded successfully!`);
+            })
+          })
+          .catch((error) => {
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+              case 'storage/object-not-found':
+                message.error("File not found");
+                // File doesn't exist
+                break;
+              case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                message.error("You do not have authorization to download this file");
+                break;
+              case 'storage/canceled':
+                // User canceled the upload
+                message.error("Download cancelled");
+                break;
+
+              // ...
+
+              case 'storage/unknown':
+                // Unknown error occurred, inspect the server response
+                message.error("Unknown error occured");
+                break;
+            }
+          });
+        }}
+        >
+          Download C Source Code File
+      </Button>
+
+      <Button
+        onClick={() => {
+          const storage = getStorage();
+          const downloadPath = ref(storage, `CPlusPlus_Source_Code_Files/${downloadFileTitle}`);
+          console.log(downloadPath);
+          console.log(getDownloadURL(downloadPath));
+          getDownloadURL(downloadPath)
+          .then((url) => {
+            console.log(url);
+            fetch(url)
+            .then((response) => response.text())
+            .then((response) => {
+              console.log(response);
+              setCodePreviewText(response);
+              message.success(`File "${downloadFileTitle}" downloaded successfully!`);
+            })
+          })
+          .catch((error) => {
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+              case 'storage/object-not-found':
+                message.error("File not found");
+                // File doesn't exist
+                break;
+              case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                message.error("You do not have authorization to download this file");
+                break;
+              case 'storage/canceled':
+                // User canceled the upload
+                message.error("Download cancelled");
+                break;
+
+              // ...
+
+              case 'storage/unknown':
+                // Unknown error occurred, inspect the server response
+                message.error("Unknown error occured");
+                break;
+            }
+          });
+        }}
+        >
+          Download C++ Source Code File
+      </Button>
+
       {/* Code preview pane */}
       {/* Scrollable text view which shows text of uploaded code files */}
       {/* WANT: Whenever a new code file is uploaded, a new tab is created above the code preview
@@ -227,8 +391,8 @@ export default function App() {
 
       Input name of file to be uploaded to cloud storage here (file name should not have an extension at the end)
       <input 
-      value = {fileTitle}
-      onChange={e => setFileTitle(e.target.value)}
+      value = {uploadfileTitle}
+      onChange={e => setUploadFileTitle(e.target.value)}
       />
 
       {/* Upload text buttons */}
@@ -238,8 +402,8 @@ export default function App() {
       }}
       onClick={() => {
         const storage = getStorage();
-        const uploadFileTitle = fileTitle + ".c";
-        const storageRef = ref(storage, `C_Source_Code_Files/"${uploadFileTitle}"`);
+        const uploadFileTitle = uploadfileTitle + ".c";
+        const storageRef = ref(storage, `C_Source_Code_Files/${uploadFileTitle}`);
         const stringData = codePreviewText;
         const blob = new Blob([stringData], { type: 'C Source File' }); // Create a Blob from the string
 
@@ -267,8 +431,8 @@ export default function App() {
       }}
       onClick={() => {
         const storage = getStorage();
-        const uploadFileTitle = fileTitle + ".cpp";
-        const storageRef = ref(storage, `CPlusPlus_Source_Code_Files/"${uploadFileTitle}"`);
+        const uploadFileTitle = uploadfileTitle + ".cpp";
+        const storageRef = ref(storage, `CPlusPlus_Source_Code_Files/${uploadFileTitle}`);
         const stringData = codePreviewText;
         const blob = new Blob([stringData], { type: 'C++ Source' }); // Create a Blob from the string
 
