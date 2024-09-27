@@ -13,12 +13,13 @@
     "antd": "^5.16.1",
     "expo": "^51.0.26",
     "expo-status-bar": "~1.11.1",
-    "firebase": "^10.10.0",
+    "firebase": "^10.13.1",
     "mermaid": "^11.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.6",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "reactflow": "^11.11.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
