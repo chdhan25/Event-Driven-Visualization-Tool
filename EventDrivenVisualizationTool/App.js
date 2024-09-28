@@ -3,19 +3,20 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import UploadScreen from './Screens/UploadScreen';
 import VisualizationSelectionScreen from './Screens/VisualizationSelector';
+import FlowchartScreen from './Screens/FlowchartScreen'; // Import the FlowchartScreen
 
 const Stack = createNativeStackNavigator();
 
-/*
-  The App.js will essentially be in control of the screens.
-  Other logic for uploading has been moved to the UploadScreen.
-*/
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Upload">
+      <Stack.Navigator initialRouteName="UploadScreen">
         <Stack.Screen name="UploadScreen" component={UploadScreen} />
-        <Stack.Screen name="VisualizationSelector" component={VisualizationSelectionScreen} />
+        <Stack.Screen
+          name="VisualizationSelector"
+          component={VisualizationSelectionScreen}
+        />
+        <Stack.Screen name="Flowchart" component={FlowchartScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
