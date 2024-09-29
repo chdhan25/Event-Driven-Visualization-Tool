@@ -38,6 +38,10 @@ body {
     background-color: #9FCCE4;
     overflow: auto;
   }
+
+  input {
+    margin: 5px;
+  }
   
   h2 {
     margin-bottom: 10px;

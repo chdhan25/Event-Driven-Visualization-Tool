@@ -1,5 +1,13 @@
 import firebase from 'firebase/app';
+import {message} from 'antd';
 import 'firebase/storage';
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  listAll,
+} from 'firebase/storage';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyDeHTGsWu5cilfZXwg2f9BhMVis3xDCJoE",
@@ -9,3 +17,213 @@ export const firebaseConfig = {
     messagingSenderId: "743645636910",
     appId: "1:743645636910:web:e3ee6cb7bfffbb6899f2bf"
   };
+
+export function listCSourceCodeFiles() {
+  const storage = getStorage();
+  const cSource = ref(storage, 'C_Source_Code_Files');
+  // Find all the prefixes and items.
+  listAll(cSource)
+  .then((res) => {
+    res.prefixes.forEach((folderRef) => {
+      // All the prefixes under listRef.
+      // You may call listAll() recursively on them.
+      console.log('Prefix:');
+      console.log(folderRef.name);
+    });
+    res.items.forEach((itemRef) => {
+      // All the items under listRef.
+      console.log('Items:');
+      console.log(itemRef.name);
+    });
+    message.info(`Code File Names Printed to Browser Console`);
+  }).catch((error) => {
+    // Uh-oh, an error occurred!
+    message.error(`An error has occured during list retrieval`);
+  });
+}
+
+export function listCPlusPlusSourceCodeFiles() {
+  const storage = getStorage();
+  const cPlusPlusSource = ref(storage, 'CPlusPlus_Source_Code_Files');
+  // Find all the prefixes and items.
+  listAll(cPlusPlusSource)
+  .then((res) => {
+    res.prefixes.forEach((folderRef) => {
+      // All the prefixes under listRef.
+      // You may call listAll() recursively on them.
+      console.log('Prefix:');
+      console.log(folderRef.name);
+    });
+    res.items.forEach((itemRef) => {
+      // All the items under listRef.
+      console.log('Items:');
+      console.log(itemRef.name);
+    });
+    message.info(`Code File Names Printed to Browser Console`);
+  }).catch((error) => {
+    // Uh-oh, an error occurred!
+    message.error(`An error has occured during list retrieval`);
+  });
+}
+
+export function uploadCSourceCodeFile(uploadTitle, codeText) {
+  const storage = getStorage();
+  const uploadFileTitle = uploadTitle + ".c";
+  const storageRef = ref(storage, `C_Source_Code_Files/${uploadFileTitle}`);
+  const stringData = codeText;
+  const blob = new Blob([stringData], { type: 'C Source File' }); // Create a Blob from the string
+
+  const uploadTask = uploadBytesResumable(storageRef, blob);
+
+  uploadTask.on('state_changed', (snapshot) => {
+    // Handle upload progress
+  }, (error) => {
+    // Handle upload errors
+  }, () => {
+    // Handle successful upload
+    getDownloadURL(storageRef).then((downloadURL) => {
+      console.log('String uploaded successfully:', downloadURL);
+      message.success(`File "${uploadFileTitle}" uploaded to cloud storage successfully! Check the browser console for file URL.`);
+    });
+  });
+}
+
+export function uploadCPlusPlusSourceCodeFile(uploadTitle, codeText) {
+  const storage = getStorage();
+  const uploadFileTitle = uploadTitle + ".cpp";
+  const storageRef = ref(storage, `CPlusPlus_Source_Code_Files/${uploadFileTitle}`);
+  const stringData = codeText;
+  const blob = new Blob([stringData], { type: 'C++ Source' }); // Create a Blob from the string
+
+  const uploadTask = uploadBytesResumable(storageRef, blob);
+
+  uploadTask.on('state_changed', (snapshot) => {
+    // Handle upload progress
+  }, (error) => {
+    // Handle upload errors
+  }, () => {
+    // Handle successful upload
+    getDownloadURL(storageRef).then((downloadURL) => {
+      console.log('String uploaded successfully:', downloadURL);
+      message.success(`File "${uploadFileTitle}" uploaded to cloud storage successfully! Check the browser console for file URL.`);
+    });
+  });
+}
+
+export function uploadParsedCode(uploadTitle, parsedCode) {
+  const storage = getStorage();
+  const uploadFileTitle = uploadTitle + ".txt";
+  const storageRef = ref(storage, `Flowcharts/${uploadFileTitle}`);
+  const stringData = parsedCode;
+  const blob = new Blob([stringData], { type: 'Text Document' }); // Create a Blob from the string
+
+  const uploadTask = uploadBytesResumable(storageRef, blob);
+
+  uploadTask.on('state_changed', (snapshot) => {
+    // Handle upload progress
+  }, (error) => {
+    // Handle upload errors
+  }, () => {
+    // Handle successful upload
+    getDownloadURL(storageRef).then((downloadURL) => {
+      console.log('Parsed Code uploaded successfully:', downloadURL);
+      message.success(`Parsed Code "${uploadFileTitle}" uploaded to cloud storage successfully! Check the browser console for file URL.`);
+    });
+  });
+}
+
+export function downloadCSourceCodeFile(downloadFileTitle, reply) {
+  const storage = getStorage();
+  const downloadPath = ref(storage, `C_Source_Code_Files/${downloadFileTitle}`);
+  console.log(downloadPath);
+  console.log(getDownloadURL(downloadPath));
+  getDownloadURL(downloadPath)
+  .then((url) => {
+    console.log(url);
+    // Insert url into an <img> tag to "download"
+    fetch(url)
+    .then((response) => response.text())
+    .then((response) => {
+      console.log("C File Download Success", response);
+      //setCodePreviewText(response);
+      message.success(`File "${downloadFileTitle}" downloaded successfully!`);
+      //return response;
+      reply = response;
+    })
+  })
+  .catch((error) => {
+    // A full list of error codes is available at
+    // https://firebase.google.com/docs/storage/web/handle-errors
+    switch (error.code) {
+      case 'storage/object-not-found':
+        message.error("File not found");
+        // File doesn't exist
+        break;
+      case 'storage/unauthorized':
+        // User doesn't have permission to access the object
+        message.error("You do not have authorization to download this file");
+        break;
+      case 'storage/canceled':
+        // User canceled the upload
+        message.error("Download cancelled");
+        break;
+
+      // ...
+
+      case 'storage/unknown':
+        // Unknown error occurred, inspect the server response
+        message.error("Unknown error occured");
+        break;
+    }
+    //return "Error, please try again";
+    reply = "Error, please try again";
+  });
+}
+
+export function downloadCPlusPlusSourceCodeFile(downloadFileTitle, reply) {
+  const storage = getStorage();
+  const downloadPath = ref(storage, `CPlusPlus_Source_Code_Files/${downloadFileTitle}`);
+  console.log(downloadPath);
+  console.log(getDownloadURL(downloadPath));
+  getDownloadURL(downloadPath)
+  .then((url) => {
+    console.log(url);
+    // Insert url into an <img> tag to "download"
+    fetch(url)
+    .then((response) => response.text())
+    .then((response) => {
+      console.log("C++ File Download Success", response);
+      //setCodePreviewText(response);
+      message.success(`File "${downloadFileTitle}" downloaded successfully!`);
+      //return response;
+      reply = response;
+    })
+  })
+  .catch((error) => {
+    // A full list of error codes is available at
+    // https://firebase.google.com/docs/storage/web/handle-errors
+    switch (error.code) {
+      case 'storage/object-not-found':
+        message.error("File not found");
+        // File doesn't exist
+        break;
+      case 'storage/unauthorized':
+        // User doesn't have permission to access the object
+        message.error("You do not have authorization to download this file");
+        break;
+      case 'storage/canceled':
+        // User canceled the upload
+        message.error("Download cancelled");
+        break;
+
+      // ...
+
+      case 'storage/unknown':
+        // Unknown error occurred, inspect the server response
+        message.error("Unknown error occured");
+        break;
+    }
+    //return "Error, please try again";
+    reply = "Error, please try again";
+  });
+}
