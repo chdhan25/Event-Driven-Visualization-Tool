@@ -54,10 +54,12 @@ export default function App() {
 
   return (
     <div className="page-container">
-      <div id="heading">
+      {/* Header Section */}
+      <div className="header">
         <h1>Event Driven Visualization Tool</h1>
       </div>
 
+      {/* Upload Section */}
       <div id="upload" style={{ paddingBottom: uploaderBottomPadding }}>
         <Upload.Dragger
           multiple
@@ -91,8 +93,8 @@ export default function App() {
       </div>
 
       <h2>List Source Code Files Saved on Cloud</h2>
-      <Button className="upload-buttons" onClick={() => { /* Code to list files */ }}>List C Source Files</Button>
-      <Button className="upload-buttons" onClick={() => { /* Code to list files */ }}>List C++ Source Files</Button>
+      <Button className="upload-buttons">List C Source Files</Button>
+      <Button className="upload-buttons">List C++ Source Files</Button>
 
       <h2>Code Preview Pane (Editable)</h2>
       <Button className="upload-buttons" onClick={() => setCodePreviewBGColor("white")}>Light Mode</Button>
