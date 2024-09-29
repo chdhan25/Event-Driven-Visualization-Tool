@@ -1,0 +1,88 @@
+.container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    height: 100vh; /* You can modify this if needed */
+}
+
+.title {
+    font-size: 48px;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: #333;
+    font-family: 'Helvetica', sans-serif;
+}
+
+.options-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    padding: 20px;
+}
+
+.option {
+    width: 28%;
+    padding-top: 28%; /* Aspect ratio 1:1 */
+    margin: 10px;
+    border: 2px solid gray;
+    border-radius: 10px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative; /* Required for the aspect ratio */
+}
+
+.option::before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.selected-option {
+    border-color: #9fcce4;
+    background-color: lemonchiffon;
+}
+
+.image {
+    width: 75%;
+    height: 70%;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+.option-text {
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    font-family: 'Helvetica', sans-serif;
+}
+
+.create-button {
+    margin-top: 30px;
+    padding: 15px 30px;
+    border-radius: 8px;
+    background-color: #9fcce4;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    font-family: 'Helvetica', sans-serif;
+    cursor: pointer;
+}
+
+.create-button:hover {
+    background-color: #9fcce4;
+}
