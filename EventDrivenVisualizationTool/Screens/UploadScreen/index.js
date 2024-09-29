@@ -25,6 +25,7 @@ export default function UploadScreen() {
   const [codePreviewBGColor, setCodePreviewBGColor] = useState('white');
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
+  const [uploadedCode, setUploadedCode] = useState(''); // State to store the uploaded code
 
   const navigation = useNavigation();
   const app = initializeApp(firebaseConfig);
@@ -41,8 +42,8 @@ export default function UploadScreen() {
     console.log('Flowchart Data:', flowchartData);
 
     if (flowchartData) {
-      // Navigate to the visualization selector screen
-      navigation.navigate('VisualizationSelector', { flowchartData });
+      // Navigate to the visualization selector screen with flowchartData and uploadedCode
+      navigation.navigate('Flowchart', { flowchartData, uploadedCode });
     } else {
       message.warning('Please upload a valid code file before continuing.');
     }
@@ -68,6 +69,7 @@ export default function UploadScreen() {
             reader.onload = (e) => {
               const fileText = e.target.result;
               setCodePreviewText(fileText);
+              setUploadedCode(fileText); // Set the uploaded code here
               const parsed = parseCCode(fileText);
               console.log('Parsed Data:', parsed);
               setParsedData(parsed);
