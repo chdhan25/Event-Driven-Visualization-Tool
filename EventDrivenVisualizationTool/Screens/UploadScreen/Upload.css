@@ -1,17 +1,52 @@
 /* Upload.css */
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+/* App.css */
+
+/* Style for the entire page container */
+.page-container {
+    width: 100%;
+    height: 100vh;
+    background-color: white; /* Set the main body to white */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
   }
   
-  #heading {
-    font-size: 20px;
-    height: 10%;
+  /* Header section style */
+  .header {
+    width: 100%;
+    background-color: #9fcce4; /* Set the entire header to blue */
+    padding: 20px;
     text-align: center;
-    margin-bottom: 10px;
   }
+  
+  /* Heading text style */
+  .header h1 {
+    color: black; /* Make the text inside the header white */
+    margin: 0;
+  }
+  
+  /* Upload buttons */
+  .upload-buttons {
+    margin: 10px;
+  }
+  
+  /* Code Preview TextInput style */
+  .text-input {
+    width: 80%;           /* Ensure it's wide enough */
+    height: 300px;        /* Give it a fixed height */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 20px 0;
+    padding: 10px;
+    font-size: 16px;      /* Ensure text is readable */
+    resize: vertical;     /* Allow vertical resizing if needed */
+  }
+  
+  
+  /* Additional styling for the Upload section */
   
   #upload {
     width: 80%;
@@ -23,36 +58,16 @@ body {
     background-color: white;
     border-radius: 20px;
   }
-  
-  .upload-buttons {
-    margin-bottom: 5px;
+
+  .continue-button {
+    margin-top: 20px;
+    width: 150px; 
+    height: 50px; 
+    background-color: #9fcce4; 
+    color: white; /* Change text color if necessary */
+    border: none; /* Remove border if you want */
+    font-size: 16px; /* Adjust font size as needed */
   }
   
-  .page-container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    flex-direction: column;
-    background-color: #9FCCE4;
-    overflow: auto;
-  }
   
-  h2 {
-    margin-bottom: 10px;
-  }
-  
-  .text-input {
-    width: 80%;
-    height: 50%;
-    min-height: 200px;
-    padding: 20px;
-    overflow: auto;
-    text-align: left;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    font-family: monospace;
-    white-space: pre-line;
-  }
   

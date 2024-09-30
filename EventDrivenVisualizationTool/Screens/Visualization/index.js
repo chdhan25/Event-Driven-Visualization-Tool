@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactFlow, { Background, Controls, MiniMap } from 'reactflow';
 import 'reactflow/dist/style.css';
+import '../../Screens/UploadScreen/Upload.css';
+
 
 const Visualization = ({ flowchartData }) => {
   console.log('Flowchart Nodes:', flowchartData.nodes);

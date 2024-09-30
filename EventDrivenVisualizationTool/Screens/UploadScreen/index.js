@@ -2,22 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Upload, Button, message } from 'antd';
 import { TextInput } from 'react-native-web';
 import { initializeApp } from 'firebase/app';
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  listAll,
-} from 'firebase/storage';
 import { firebaseConfig } from '../../ApplicationLogic/firebase';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { useNavigation } from '@react-navigation/native';
 import './Upload.css'; // Import the external CSS file
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
+import '../../Screens/UploadScreen/Upload.css';
 
 export default function UploadScreen() {
   // State Variables
   const [uploaderBottomPadding, setUploaderBottomPadding] = useState(20);
+  const [fileUploaded, setFileUploaded] = useState(false); // Track upload state
   const [codePreviewText, setCodePreviewText] = useState(
     'Upload and select a source code file to view its contents here.'
   );
@@ -49,89 +44,92 @@ export default function UploadScreen() {
     }
   };
 
+  const handleFileUpload = (file) => {
+    message.success(
+      `Source code "${file.name}" uploaded to code pane successfully.`
+    );
+    setUploaderBottomPadding(uploaderBottomPadding + 30);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const fileText = e.target.result;
+      setCodePreviewText(fileText);
+      const parsed = parseCCode(fileText);
+      console.log('Parsed Data:', parsed);
+      setParsedData(parsed);
+    };
+    reader.readAsText(file);
+    
+    setFileUploaded(true); // Set upload state to true
+    return false; // Prevent auto upload
+  };
+
+  const handleReUpload = () => {
+    setFileUploaded(false); // Reset the upload state
+    setCodePreviewText('Upload and select a source code file to view its contents here.'); // Reset preview text
+    setUploaderBottomPadding(20); // Reset padding if needed
+  };
+
   return (
     <div className="page-container">
-      <div id="heading">
+      <div className="header" id="heading">
         <h1>Event Driven Visualization Tool</h1>
       </div>
 
       <div id="upload" style={{ paddingBottom: uploaderBottomPadding }}>
-        <Upload.Dragger
-          multiple
-          accepts=".c,.cpp"
-          listType="text"
-          beforeUpload={(file) => {
-            message.success(
-              `Source code "${file.name}" uploaded to code pane successfully.`
-            );
-            setUploaderBottomPadding(uploaderBottomPadding + 30);
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const fileText = e.target.result;
-              setCodePreviewText(fileText);
-              setUploadedCode(fileText); // Set the uploaded code here
-              const parsed = parseCCode(fileText);
-              console.log('Parsed Data:', parsed);
-              setParsedData(parsed);
-            };
-            reader.readAsText(file);
-            return false;
-          }}
-          onRemove={(file) => {
-            setUploaderBottomPadding(uploaderBottomPadding - 30);
-            message.warning(`File "${file.name}" deleted.`);
-          }}
-        >
-          <p>Drag files here</p>
-          <p>OR</p>
-          <Button>Click Upload</Button>
-        </Upload.Dragger>
+
+        {!fileUploaded ? (
+          <Upload.Dragger
+            multiple
+            accepts=".c,.cpp"
+            listType="text"
+            beforeUpload={handleFileUpload}
+            onRemove={handleReUpload}
+          >
+            <p>Drag files here</p>
+            <p>OR</p>
+            <Button>Click Upload</Button>
+          </Upload.Dragger>
+        ) : (
+          <div>
+            <h2>Code Preview Pane:</h2>
+            <Button
+              className="upload-buttons"
+              onClick={() => setCodePreviewBGColor('white')}
+            >
+              Light Mode
+            </Button>
+            <Button
+              className="upload-buttons"
+              onClick={() => setCodePreviewBGColor('black')}
+            >
+              Dark Mode
+            </Button>
+            <TextInput
+              style={{
+                backgroundColor: codePreviewBGColor,
+                color: codePreviewTextColor,
+                width: '80%', // Ensure it takes the full width
+                height: '300px',
+                overflowY: 'auto',
+              }}
+              className="text-input"
+              onChangeText={setCodePreviewText}
+              value={codePreviewText}
+              multiline={true}
+            />
+            <Button onClick={handleReUpload} style={{ marginTop: '20px' }}>
+              Upload New File
+            </Button>
+          </div>
+        )}
       </div>
 
       <h2>List Source Code Files Saved on Cloud</h2>
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          /* List C source files */
-        }}
-      >
-        List C Source Files
-      </Button>
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          /* List C++ source files */
-        }}
-      >
-        List C++ Source Files
-      </Button>
-
-      <h2>Code Preview Pane (Editable)</h2>
-      <Button
-        className="upload-buttons"
-        onClick={() => setCodePreviewBGColor('white')}
-      >
-        Light Mode
-      </Button>
-      <Button
-        className="upload-buttons"
-        onClick={() => setCodePreviewBGColor('black')}
-      >
-        Dark Mode
-      </Button>
-
-      <TextInput
-        style={{
-          backgroundColor: codePreviewBGColor,
-          color: codePreviewTextColor,
-        }}
-        className="text-input"
-        onChangeText={setCodePreviewText}
-        value={codePreviewText}
-        multiline={true}
-      />
+      <Button className="upload-buttons">List C Source Files</Button>
+      <Button className="upload-buttons">List C++ Source Files</Button>
 
       <Button
+        className="continue-button"
         type="primary"
         onClick={handleContinue}
         style={{ marginTop: '20px' }}

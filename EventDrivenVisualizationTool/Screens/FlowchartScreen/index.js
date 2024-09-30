@@ -1,9 +1,14 @@
+
+import '../../Screens/UploadScreen/Upload.css';
+
+
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Button, Alert } from 'react-native';
 import CodeEditor from '../../components/CodeEditor';
 import Visualization from '../Visualization';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
+
 
 const FlowchartScreen = ({ route }) => {
   const { flowchartData: initialFlowchartData, uploadedCode } = route.params;
