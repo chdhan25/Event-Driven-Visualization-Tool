@@ -10,12 +10,23 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="UploadScreen">
+      <Stack.Navigator
+        initialRouteName="UploadScreen"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#9fcce4', // Match the header background color
+            borderBottomWidth: 0, // Remove the bottom border
+            shadowOpacity: 0, // Remove shadow to ensure no border appears
+          },
+          headerTintColor: 'black', // Set the text to black
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerShadowVisible: false, // Remove the shadow/border if present
+        }}
+      >
         <Stack.Screen name="UploadScreen" component={UploadScreen} />
-        <Stack.Screen
-          name="VisualizationSelector"
-          component={VisualizationSelectionScreen}
-        />
+        <Stack.Screen name="VisualizationSelector" component={VisualizationSelectionScreen} />
         <Stack.Screen name="Flowchart" component={FlowchartScreen} />
       </Stack.Navigator>
     </NavigationContainer>
