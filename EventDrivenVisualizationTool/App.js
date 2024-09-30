@@ -12,10 +12,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="UploadScreen">
         <Stack.Screen name="UploadScreen" component={UploadScreen} />
-        <Stack.Screen
-          name="VisualizationSelector"
-          component={VisualizationSelectionScreen}
-        />
+        <Stack.Screen name="VisualizationSelector" component={VisualizationSelectionScreen} />
         <Stack.Screen name="Flowchart" component={FlowchartScreen} />
       </Stack.Navigator>
     </NavigationContainer>

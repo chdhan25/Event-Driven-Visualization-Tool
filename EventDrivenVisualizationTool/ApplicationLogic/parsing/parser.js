@@ -21,19 +21,19 @@ const extractISRDetails = (line) => {
     return {
       type: 'AVR',
       name: avrMatch[1].trim(),
-      connections: ['testconnection1', 'testconnection2'], // Placeholder for connections
+      connections: [], // Placeholder for connections
     };
   } else if (armMatch) {
     return {
       type: 'ARM',
       name: armMatch[1].trim(),
-      connections: ['testconnection1', 'testconnection2'], // Placeholder for connections
+      connections: [], // Placeholder for connections
     };
   } else if (extiMatch) {
     return {
       type: 'ARM',
       name: extiMatch[1].trim(), // Handle EXTI IRQ handlers
-      connections: ['testconnection1', 'testconnection2'], // Placeholder for connections
+      connections: [], // Placeholder for connections
     };
   } else {
     return { type: 'Unknown', name: 'Unknown', connections: [] };
@@ -48,13 +48,13 @@ const mapToFlowchartElement = (line) => {
   }
 
   if (isISRLine(line)) {
-    return { type: 'Process', description: 'ISR Definition' };
+    return { type: 'Process', description: 'ISR Definition', line: line };
   } else if (line.includes('return')) {
-    return { type: 'End', description: 'Return Statement' };
+    return { type: 'End', description: 'Return Statement', line: line };
   } else if (line.trim() === '{' || line.trim() === '}') {
     return null; // Ignore block delimiters
   } else {
-    return { type: 'Process', description: 'Operation or Assignment' };
+    return { type: 'Process', description: 'Operation or Assignment', line: line };
   }
 };
 

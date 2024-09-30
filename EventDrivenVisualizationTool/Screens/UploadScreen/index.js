@@ -43,9 +43,12 @@ export default function UploadScreen() {
     if (flowchartData) {
       // Navigate to the visualization selector screen
       navigation.navigate('VisualizationSelector', { flowchartData });
+      
+      navigation.navigate('FlowchartScreen', { flowchartData});
     } else {
       message.warning('Please upload a valid code file before continuing.');
     }
+
   };
 
   return (
