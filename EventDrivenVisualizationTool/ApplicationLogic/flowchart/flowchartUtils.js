@@ -13,7 +13,8 @@ export function generateFlowchartData(parsedData) {
         id: nodeId,
         type: 'ISR',
         data: { label: `${isr.type} - ${isr.name}` },
-        position: { x: startX, y: currentY }, // Place nodes in a vertical line
+        position: { x: startX, y: currentY },
+        line: isr.line // Place nodes in a vertical line
       });
 
       currentY += nodeSpacingY; // Move down for the next node
@@ -39,7 +40,8 @@ export function generateFlowchartData(parsedData) {
         id: nodeId,
         type: 'Function',
         data: { label: `Function - ${func.name}` },
-        position: { x: startX, y: currentY }, // Continue vertical line
+        position: { x: startX, y: currentY },
+         // Continue vertical line
       });
 
       currentY += nodeSpacingY; // Move down for the next node
@@ -65,7 +67,8 @@ export function generateFlowchartData(parsedData) {
         id: nodeId,
         type: element.type,
         data: { label: element.description },
-        position: { x: startX, y: currentY }, // Place in vertical order
+        position: { x: startX, y: currentY },
+        line: element.line // Place in vertical order
       });
 
       currentY += nodeSpacingY; // Move down for the next node

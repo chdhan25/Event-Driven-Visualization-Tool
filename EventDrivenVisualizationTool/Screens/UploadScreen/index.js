@@ -37,11 +37,18 @@ export default function UploadScreen() {
     console.log('Flowchart Data:', flowchartData);
 
     if (flowchartData) {
+      // Navigate to the visualization selector screen
+      navigation.navigate('VisualizationSelector', { flowchartData });
+      
+      navigation.navigate('FlowchartScreen', { flowchartData});
+
       // Navigate to the visualization selector screen with flowchartData and uploadedCode
       navigation.navigate('Flowchart', { flowchartData, uploadedCode });
+
     } else {
       message.warning('Please upload a valid code file before continuing.');
     }
+
   };
 
   const handleFileUpload = (file) => {
