@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import ReactFlow, { Background, Controls, MiniMap } from 'reactflow';
 import 'reactflow/dist/style.css';
+import '../../Screens/UploadScreen/Upload.css';
+
 
 import { Modal } from 'antd';
 

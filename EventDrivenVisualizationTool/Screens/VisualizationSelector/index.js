@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   Button,
   Alert,
-  TouchableOpacity as RNTouchableOpacity,
 } from 'react-native';
-import { VisualizationSelectionScreenStyles as styles } from './styles';
+import '../../Screens/VisualizationSelector/styles.css'; // Import the CSS file
 import Visualization from '../Visualization/index'; // Import the Visualization component
+import '../../Screens/UploadScreen/Upload.css'; // Keep this as is
 
 const VisualizationSelectionScreen = () => {
   const route = useRoute(); // Get route params
@@ -18,10 +18,10 @@ const VisualizationSelectionScreen = () => {
   const navigation = useNavigation();
 
   /* 
-        These are the options for visualizations that we create.
-        The Flowchart is currently in progress.
-        Force and Hierarchy are future/stretch goals.
-    */
+      These are the options for visualizations that we create.
+      The Flowchart is currently in progress.
+      Force and Hierarchy are future/stretch goals.
+  */
   const options = [
     { id: 1, name: 'Flowchart', image: require('../../assets/Flowchart.png') },
     { id: 2, name: 'Force', image: require('../../assets/Force.png') },
@@ -32,12 +32,12 @@ const VisualizationSelectionScreen = () => {
     useState(selectedOption);
 
   /*
-        This is where the visualization creation methods should be called.
-        They can be implemented somewhere else but based on which option is selected
-        the respective create function should be called.
+      This is where the visualization creation methods should be called.
+      They can be implemented somewhere else but based on which option is selected
+      the respective create function should be called.
 
-        (The Alerts are currently not working, research is being done as to why)
-    */
+      (The Alerts are currently not working, research is being done as to why)
+  */
   const handleCreateVisualization = () => {
     console.log('Flowchart Data before navigating:', flowchartData); // Log the data
 
@@ -60,36 +60,33 @@ const VisualizationSelectionScreen = () => {
   };
 
   /*
-        This is the Visualization Selection Page containing the three options
-        and a create visualization button.
-    */
+      This is the Visualization Selection Page containing the three options
+      and a create visualization button.
+  */
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Event Driven Visualization Tool</Text>
-      <View style={styles.optionsContainer}>
+    <div className="container">
+      <h1 className="title">Please select your visualization type below</h1>
+      <div className="options-container">
         {options.map((option) => (
-          <TouchableOpacity
+          <div
             key={option.id}
-            style={[
-              styles.option,
-              selectedVisualization?.id === option.id && styles.selectedOption,
-            ]}
-            onPress={() => setSelectedVisualization(option)}
+            className={`option ${selectedVisualization?.id === option.id ? 'selected-option' : ''}`}
+            onClick={() => setSelectedVisualization(option)}
           >
-            <Image source={option.image} style={styles.image} />
-            <Text style={styles.optionText}>{option.name}</Text>
-          </TouchableOpacity>
+            <img src={option.image} className="image" alt={`${option.name}`} />
+            <p className="option-text">{option.name}</p>
+          </div>
         ))}
-      </View>
-      <RNTouchableOpacity
-        style={styles.createButton}
-        onPress={handleCreateVisualization}
+      </div>
+      <div
+        className="create-button"
+        onClick={handleCreateVisualization}
       >
-        <Text style={{ color: 'white', fontSize: 18 }}>
+        <p className="create-button-text">
           Create Visualization
-        </Text>
-      </RNTouchableOpacity>
-    </View>
+        </p>
+      </div>
+    </div>
   );
 };
 
