@@ -32,6 +32,7 @@ export default function UploadScreen() {
   const [codePreviewText, setCodePreviewText] = useState(
     'Upload and select a source code file to view its contents here.'
   );
+  const [uploadFileArray, setuploadFileArray] = useState([]);
   const [uploadfileTitle, setUploadFileTitle] = useState("Code");
   const [downloadFileTitle, setDownloadFileTitle] = useState("Old_Code");
   const [parsedCodeTitle, setParsedCodeTitle] = useState("Flowchart");
@@ -69,7 +70,7 @@ export default function UploadScreen() {
     }
 
   };
-
+  //I have replaced the method ran on upload to handleDirectoryUpload
   const handleFileUpload = (file) => {
     message.success(
       `Source code "${file.name}" uploaded to code pane successfully.`
@@ -89,8 +90,37 @@ export default function UploadScreen() {
     return false; // Prevent auto upload
   };
 
+  const handleDirectoryUpload = (directoryFile) => {
+    console.log(directoryFile);
+    setUploaderBottomPadding(uploaderBottomPadding + 50);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const fileText = e.target.result;
+      console.log(fileText);
+      message.success(`File "${directoryFile.name}" uploaded`);
+    };
+    reader.readAsText(directoryFile);
+  }
+
+  const handleFilePreview = (targetFile) => {
+    console.log("File Name: " + targetFile.name);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const fileText = e.target.result;
+      console.log(fileText);
+      setCodePreviewText(fileText);
+      message.info(`File "${targetFile.name}" previewed. Text sent to code preview pane.`)
+    };
+    reader.readAsText(targetFile.originFileObj);
+  }
+
+  const handleFileRemove = (targetFile) => {
+    setUploaderBottomPadding(uploaderBottomPadding - 50);
+    message.info(`File "${targetFile.name}" has been removed.`);
+  }
+  //I have replaced the method that is run on a file deletion with handleFileRemove
   const handleReUpload = () => {
-    setFileUploaded(false); // Reset the upload state
+    //setFileUploaded(false); // Reset the upload state
     setCodePreviewText('Upload and select a source code file to view its contents here.'); // Reset preview text
     setUploaderBottomPadding(20); // Reset padding if needed
   };
@@ -106,10 +136,19 @@ export default function UploadScreen() {
         {!fileUploaded ? (
           <Upload.Dragger
             multiple
+            action="http://localhost:8081/"
             accepts=".c,.cpp"
             listType="text"
-            beforeUpload={handleFileUpload}
-            onRemove={handleReUpload}
+            directory="true"
+            showUploadList={{
+              showPreviewIcon: true
+            }}
+            //beforeUpload={handleFileUpload}
+            beforeUpload={(file) => handleDirectoryUpload(file)}
+            //onPreview={handleFileUpload}
+            onPreview={(file) => handleFilePreview(file)}
+            //onRemove={handleReUpload}
+            onRemove={(file) => handleFileRemove(file)}
           >
             <p>Drag files here</p>
             <p>OR</p>
@@ -118,6 +157,23 @@ export default function UploadScreen() {
         ) : (
           <div>
             <h2>Code Preview Pane:</h2>
+            {/* <Button
+              className="upload-buttons"
+              onClick={() => {
+                console.log("Upload Files: " + uploadFileArray.length);
+                for (const sourceFile of uploadFileArray) {
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                    const fileText = e.target.result;
+                    console.log(fileText);
+                  };
+                  reader.readAsText(sourceFile);
+                }
+              }}
+            >
+              Preview Upload File List
+            </Button> */}
+
             <Button
               className="upload-buttons"
               onClick={() => setCodePreviewBGColor('white')}

@@ -9,6 +9,7 @@ import {
   listAll,
 } from 'firebase/storage';
 
+  /**Firebase API Credenitals. DO NOT CHANGE.*/
 export const firebaseConfig = {
     apiKey: "AIzaSyDeHTGsWu5cilfZXwg2f9BhMVis3xDCJoE",
     authDomain: "event-driven-visualization.firebaseapp.com",
@@ -18,6 +19,10 @@ export const firebaseConfig = {
     appId: "1:743645636910:web:e3ee6cb7bfffbb6899f2bf"
   };
 
+  /**
+   * List the names of all C Source Code Files currently saved on the cloud.
+   * The list of files is printed in the browser console.
+   */
 export function listCSourceCodeFiles() {
   const storage = getStorage();
   const cSource = ref(storage, 'C_Source_Code_Files');
@@ -42,6 +47,10 @@ export function listCSourceCodeFiles() {
   });
 }
 
+  /**
+   * List the names of all C++ Source Code Files currently saved on the cloud.
+   * The list of files is printed in the browser console.
+   */
 export function listCPlusPlusSourceCodeFiles() {
   const storage = getStorage();
   const cPlusPlusSource = ref(storage, 'CPlusPlus_Source_Code_Files');
@@ -66,6 +75,13 @@ export function listCPlusPlusSourceCodeFiles() {
   });
 }
 
+  /**
+   * Upload a String containing C source code text to the cloud as a '.c' file.
+   * After a successful upload, a pop-up will confirm that the upload was completed, and a link to view the
+   * file saved on the cloud is printed in the browser console.
+   * @param {string} uploadTitle The name the '.c' file will be saved under in the cloud.
+   * @param {string} codeText A String containing all of the text of the C Source Code file.
+   */
 export function uploadCSourceCodeFile(uploadTitle, codeText) {
   const storage = getStorage();
   const uploadFileTitle = uploadTitle + ".c";
@@ -88,6 +104,13 @@ export function uploadCSourceCodeFile(uploadTitle, codeText) {
   });
 }
 
+  /**
+   * Upload a String containing C++ source code text to the cloud as a '.cpp' file.
+   * After a successful upload, a pop-up will confirm that the upload was completed, and a link to view the
+   * file saved on the cloud is printed in the browser console.
+   * @param {string} uploadTitle The name the '.cpp' file will be saved under in the cloud.
+   * @param {string} codeText A String containing all of the text of the C++ source code file.
+   */
 export function uploadCPlusPlusSourceCodeFile(uploadTitle, codeText) {
   const storage = getStorage();
   const uploadFileTitle = uploadTitle + ".cpp";
@@ -132,6 +155,21 @@ export function uploadParsedCode(uploadTitle, parsedCode) {
   });
 }
 
+/**
+ * Upload a directory to the cloud.
+ * @param {string} directoryTitle The name that the directory will be saved under in the cloud.
+ * @param {File[]} fileArray An array of source code files to be uploaded to the cloud.
+ */
+export function uploadDirectory(directoryTitle, fileArray) {
+  const storage = getStorage();
+  const uploadPath = ref(storage, `C_Source_Code_Files/${directoryTitle}`);
+}
+
+/**
+ * Retrieve a C source code file from the cloud storage and store its text in a String.
+ * @param {string} downloadFileTitle The name of the source code file to search for.
+ * @param {string} reply 
+ */
 export function downloadCSourceCodeFile(downloadFileTitle, reply) {
   const storage = getStorage();
   const downloadPath = ref(storage, `C_Source_Code_Files/${downloadFileTitle}`);
@@ -180,6 +218,11 @@ export function downloadCSourceCodeFile(downloadFileTitle, reply) {
   });
 }
 
+/**
+ * Retrieve a C++ source code file from the cloud storage and store its text in a String.
+ * @param {string} downloadFileTitle The name of the source code file to search for.
+ * @param {string} reply 
+ */
 export function downloadCPlusPlusSourceCodeFile(downloadFileTitle, reply) {
   const storage = getStorage();
   const downloadPath = ref(storage, `CPlusPlus_Source_Code_Files/${downloadFileTitle}`);
