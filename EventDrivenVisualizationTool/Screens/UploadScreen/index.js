@@ -13,11 +13,14 @@ import {
   firebaseConfig,
   listCSourceCodeFiles,
   listCPlusPlusSourceCodeFiles,
+  listDirectories,
   uploadCSourceCodeFile,
   uploadCPlusPlusSourceCodeFile,
   downloadCSourceCodeFile,
   downloadCPlusPlusSourceCodeFile,
-  uploadParsedCode
+  downloadDirectory,
+  uploadParsedCode,
+  uploadDirectory
 } from '../../ApplicationLogic/firebase';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { useNavigation } from '@react-navigation/native';
@@ -27,11 +30,14 @@ import '../../Screens/UploadScreen/Upload.css';
 
 export default function UploadScreen() {
   // State Variables
-  const [uploaderBottomPadding, setUploaderBottomPadding] = useState(20);
+  const [uploaderBottomPadding, setUploaderBottomPadding] = useState(260);
   const [fileUploaded, setFileUploaded] = useState(false); // Track upload state
   const [codePreviewText, setCodePreviewText] = useState(
     'Upload and select a source code file to view its contents here.'
   );
+  const [uploadFileArray, setuploadFileArray] = useState(new Array());
+  const [uploadDirectoryTitle, setUploadDirectoryTitle] = useState("uploadFolder");
+  const [downloadDirectoryTitle, setDownloadDirectoryTitle] = useState("downloadFolder");
   const [uploadfileTitle, setUploadFileTitle] = useState("Code");
   const [downloadFileTitle, setDownloadFileTitle] = useState("Old_Code");
   const [parsedCodeTitle, setParsedCodeTitle] = useState("Flowchart");
@@ -69,7 +75,7 @@ export default function UploadScreen() {
     }
 
   };
-
+  //I have replaced the method ran on upload to handleDirectoryUpload
   const handleFileUpload = (file) => {
     message.success(
       `Source code "${file.name}" uploaded to code pane successfully.`
@@ -89,8 +95,47 @@ export default function UploadScreen() {
     return false; // Prevent auto upload
   };
 
+  const handleDirectoryUpload = (directoryFile, directoryFileList) => {
+    console.log(directoryFileList);
+    setUploaderBottomPadding(uploaderBottomPadding + (30 * directoryFileList.length));
+    console.log(directoryFile);
+    uploadFileArray.push(directoryFile);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const fileText = e.target.result;
+      console.log(directoryFile.name);
+      console.log(fileText);
+      message.success(`File "${directoryFile.name}" uploaded`);
+    };
+    reader.readAsText(directoryFile);
+  }
+
+  const handleFilePreview = (targetFile) => {
+    console.log("File Name: " + targetFile.name);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const fileText = e.target.result;
+      console.log(fileText);
+      setCodePreviewText(fileText);
+      message.info(`File "${targetFile.name}" previewed. Text sent to code preview pane.`)
+    };
+    reader.readAsText(targetFile);
+  }
+
+  const handleFileRemove = (targetFile) => {
+    setUploaderBottomPadding(uploaderBottomPadding - 30);
+    const filtered = uploadFileArray.filter((arrayFile) => {
+      //console.log("File: " + arrayFile.name);
+      //console.log("To Remove: " + targetFile.name);
+      //console.log(arrayFile.name != targetFile.name);
+      return arrayFile.name != targetFile.name;
+    });
+    setuploadFileArray(filtered);
+    message.info(`File "${targetFile.name}" has been removed.`);
+  }
+  //I have replaced the method that is run on a file deletion with handleFileRemove
   const handleReUpload = () => {
-    setFileUploaded(false); // Reset the upload state
+    //setFileUploaded(false); // Reset the upload state
     setCodePreviewText('Upload and select a source code file to view its contents here.'); // Reset preview text
     setUploaderBottomPadding(20); // Reset padding if needed
   };
@@ -103,21 +148,107 @@ export default function UploadScreen() {
 
       <div id="upload" style={{ paddingBottom: uploaderBottomPadding }}>
 
+        <Button
+            className="upload-buttons"
+            onClick={() => {
+              console.log("Upload Files: " + uploadFileArray.length);
+              console.log(uploadFileArray);
+              for (const sourceFile of uploadFileArray) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  const fileText = e.target.result;
+                  console.log(fileText);
+                };
+                reader.readAsText(sourceFile);
+              }
+              message.info(`File Array details printed to browser console`);
+            }}
+          >
+            Preview Upload File List (For Testing Only)
+        </Button>
+
+      <br></br>
+
+      Input name of directory to be uploaded to cloud
+      <input 
+      value = {uploadDirectoryTitle}
+      onChange={e => setUploadDirectoryTitle(e.target.value)}
+      />
+
+      <Button
+        className="upload-buttons"
+        onClick={() => {
+          uploadDirectory(uploadDirectoryTitle, uploadFileArray);
+        }}
+      >
+        Upload Directory
+      </Button>
+
+      <br></br>
+
+      Input name of directory to be downloaded from cloud
+      <input 
+      value = {downloadDirectoryTitle}
+      onChange={e => setDownloadDirectoryTitle(e.target.value)}
+      />
+
+      <Button
+        className="upload-buttons"
+        onClick={() => {
+          downloadDirectory(downloadDirectoryTitle, uploadFileArray);
+        }}
+      >
+        Download Directory
+      </Button>
+
+      <br></br>
+
+      <Button
+        className="upload-buttons"
+        onClick={() => {
+          setUploaderBottomPadding(260 + (30 * uploadFileArray.length));
+        }}
+      >
+        Reset Padding
+      </Button>
+
+      <br></br>
+
+      <Button
+        className="upload-buttons"
+        onClick={() => {
+          listDirectories();
+        }}
+      >
+        List Directories
+      </Button>
+
         {!fileUploaded ? (
           <Upload.Dragger
             multiple
+            action="http://localhost:8081/"
             accepts=".c,.cpp"
             listType="text"
-            beforeUpload={handleFileUpload}
-            onRemove={handleReUpload}
+            directory="true"
+            fileList={uploadFileArray}
+            showUploadList={{
+              showPreviewIcon: true
+            }}
+            //beforeUpload={handleFileUpload}
+            beforeUpload={(file, fileList) => handleDirectoryUpload(file, fileList)}
+            //onPreview={handleFileUpload}
+            onPreview={(file) => handleFilePreview(file)}
+            //onRemove={handleReUpload}
+            onRemove={(file) => handleFileRemove(file)}
           >
             <p>Drag files here</p>
             <p>OR</p>
-            <Button>Click Upload</Button>
+            <Button>Upload Directory</Button>
           </Upload.Dragger>
         ) : (
           <div>
             <h2>Code Preview Pane:</h2>
+
             <Button
               className="upload-buttons"
               onClick={() => setCodePreviewBGColor('white')}
