@@ -23,6 +23,7 @@ import {
   uploadDirectory
 } from '../../ApplicationLogic/firebase';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
+import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
 import { useNavigation } from '@react-navigation/native';
 import './Upload.css'; // Import the external CSS file
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
@@ -46,6 +47,10 @@ export default function UploadScreen() {
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
   const [uploadedCode, setUploadedCode] = useState(''); // State to store the uploaded code
+  const [cFiles, setCFiles] = useState(new Array())
+  const [cppFiles, setCppFiles] = useState(new Array());
+  const [parsedC, setParsedC] = useState(new Array());
+  const [parsedCpp, setParsedCpp] = useState(new Array());
 
   const navigation = useNavigation();
   const app = initializeApp(firebaseConfig);
@@ -55,6 +60,7 @@ export default function UploadScreen() {
       const flowData = generateFlowchartData(parsedData);
       console.log('Generated Flowchart Data:', flowData);
       setFlowchartData(flowData);
+      console.log("parsed data in useEffect", parsedData);
     }
   }, [parsedData]);
 
@@ -98,23 +104,66 @@ export default function UploadScreen() {
   const handleDirectoryUpload = (directoryFile, directoryFileList) => {
     console.log(directoryFileList);
     setUploaderBottomPadding(uploaderBottomPadding + (30 * directoryFileList.length));
-    console.log(directoryFile);
+    const extension = directoryFile.name.split('.').pop().toLowerCase();
+    if (extension === 'c') {
+      cFiles.push(directoryFile);
+    } else if (extension === 'cpp') {
+      cppFiles.push(directoryFile);
+    }
+
+    console.log(cFiles);
+    console.log(cppFiles);
+
     uploadFileArray.push(directoryFile);
+    console.log(uploadFileArray);
     const reader = new FileReader();
     reader.onload = (e) => {
+
+
+      console.log(cFiles);
+      console.log(cppFiles);
       const fileText = e.target.result;
       console.log(directoryFile.name);
-      console.log(fileText);
+      console.log("This is  fileText: " + fileText);
+      
+      console.log("This is the extension: " + extension)
+      if (extension === 'c') {
+        const parsed = parseCCode(fileText);
+        console.log('Parsed Data:', parsed);
+        setParsedData(parsed);
+      } else if (extension === 'cpp') {
+        const parsedCpp = (parseCppCode(fileText));
+        setParsedData(parsedCpp);
+        //this isnt really working so I implemented it properly in the handleFilePreview method
+      }
+
+
       message.success(`File "${directoryFile.name}" uploaded`);
+
     };
     reader.readAsText(directoryFile);
   }
 
   const handleFilePreview = (targetFile) => {
+    const extension = targetFile.name.split('.').pop().toLowerCase();
+
+
+
     console.log("File Name: " + targetFile.name);
     const reader = new FileReader();
     reader.onload = (e) => {
+
+
       const fileText = e.target.result;
+      if (extension === 'c') {
+        const parsed = parseCCode(fileText);
+        console.log('Parsed Data:', parsed);
+        setParsedData(parsed);
+      } else if (extension === 'cpp') {
+        const parsedCpp = (parseCppCode(fileText));
+        setParsedData(parsedCpp);
+        console.log("Parsed CPP data: ", parsedCpp);
+      }
       console.log(fileText);
       setCodePreviewText(fileText);
       message.info(`File "${targetFile.name}" previewed. Text sent to code preview pane.`)
