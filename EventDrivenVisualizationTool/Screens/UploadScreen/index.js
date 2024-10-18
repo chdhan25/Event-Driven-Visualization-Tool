@@ -9,7 +9,7 @@ import { initializeApp } from 'firebase/app';
   getDownloadURL,
   listAll,
 } from 'firebase/storage';*/
-import { 
+import {
   firebaseConfig,
   listCSourceCodeFiles,
   listCPlusPlusSourceCodeFiles,
@@ -20,7 +20,7 @@ import {
   downloadCPlusPlusSourceCodeFile,
   downloadDirectory,
   uploadParsedCode,
-  uploadDirectory
+  uploadDirectory,
 } from '../../ApplicationLogic/firebase';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
@@ -37,17 +37,19 @@ export default function UploadScreen() {
     'Upload and select a source code file to view its contents here.'
   );
   const [uploadFileArray, setuploadFileArray] = useState(new Array());
-  const [uploadDirectoryTitle, setUploadDirectoryTitle] = useState("uploadFolder");
-  const [downloadDirectoryTitle, setDownloadDirectoryTitle] = useState("downloadFolder");
-  const [uploadfileTitle, setUploadFileTitle] = useState("Code");
-  const [downloadFileTitle, setDownloadFileTitle] = useState("Old_Code");
-  const [parsedCodeTitle, setParsedCodeTitle] = useState("Flowchart");
+  const [uploadDirectoryTitle, setUploadDirectoryTitle] =
+    useState('uploadFolder');
+  const [downloadDirectoryTitle, setDownloadDirectoryTitle] =
+    useState('downloadFolder');
+  const [uploadfileTitle, setUploadFileTitle] = useState('Code');
+  const [downloadFileTitle, setDownloadFileTitle] = useState('Old_Code');
+  const [parsedCodeTitle, setParsedCodeTitle] = useState('Flowchart');
   const [codePreviewTextColor, setCodePreviewTextColor] = useState('black');
   const [codePreviewBGColor, setCodePreviewBGColor] = useState('white');
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
   const [uploadedCode, setUploadedCode] = useState(''); // State to store the uploaded code
-  const [cFiles, setCFiles] = useState(new Array())
+  const [cFiles, setCFiles] = useState(new Array());
   const [cppFiles, setCppFiles] = useState(new Array());
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedCpp, setParsedCpp] = useState(new Array());
@@ -60,27 +62,21 @@ export default function UploadScreen() {
       const flowData = generateFlowchartData(parsedData);
       console.log('Generated Flowchart Data:', flowData);
       setFlowchartData(flowData);
-      console.log("parsed data in useEffect", parsedData);
+      console.log('parsed data in useEffect', parsedData);
     }
   }, [parsedData]);
 
   const handleContinue = () => {
-    console.log('Flowchart Data:', flowchartData);
-
     if (flowchartData) {
-      // Navigate to the visualization selector screen
-      navigation.navigate('VisualizationSelector', { flowchartData });
-      
-      navigation.navigate('FlowchartScreen', { flowchartData});
-
-      // Navigate to the visualization selector screen with flowchartData and uploadedCode
-      navigation.navigate('Flowchart', { flowchartData, uploadedCode });
-
+      navigation.navigate('FlowchartScreen', {
+        flowchartData: flowchartData,
+        uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
+      });
     } else {
       message.warning('Please upload a valid code file before continuing.');
     }
-
   };
+
   //I have replaced the method ran on upload to handleDirectoryUpload
   const handleFileUpload = (file) => {
     message.success(
@@ -96,14 +92,16 @@ export default function UploadScreen() {
       setParsedData(parsed);
     };
     reader.readAsText(file);
-    
+
     setFileUploaded(true); // Set upload state to true
     return false; // Prevent auto upload
   };
 
   const handleDirectoryUpload = (directoryFile, directoryFileList) => {
     console.log(directoryFileList);
-    setUploaderBottomPadding(uploaderBottomPadding + (30 * directoryFileList.length));
+    setUploaderBottomPadding(
+      uploaderBottomPadding + 30 * directoryFileList.length
+    );
     const extension = directoryFile.name.split('.').pop().toLowerCase();
     if (extension === 'c') {
       cFiles.push(directoryFile);
@@ -118,58 +116,48 @@ export default function UploadScreen() {
     console.log(uploadFileArray);
     const reader = new FileReader();
     reader.onload = (e) => {
-
-
       console.log(cFiles);
       console.log(cppFiles);
       const fileText = e.target.result;
       console.log(directoryFile.name);
-      console.log("This is  fileText: " + fileText);
-      
-      console.log("This is the extension: " + extension)
+      console.log('This is  fileText: ' + fileText);
+
+      console.log('This is the extension: ' + extension);
       if (extension === 'c') {
         const parsed = parseCCode(fileText);
         console.log('Parsed Data:', parsed);
         setParsedData(parsed);
       } else if (extension === 'cpp') {
-        const parsedCpp = (parseCppCode(fileText));
+        const parsedCpp = parseCppCode(fileText);
         setParsedData(parsedCpp);
         //this isnt really working so I implemented it properly in the handleFilePreview method
       }
 
-
       message.success(`File "${directoryFile.name}" uploaded`);
-
     };
     reader.readAsText(directoryFile);
-  }
+  };
 
   const handleFilePreview = (targetFile) => {
     const extension = targetFile.name.split('.').pop().toLowerCase();
-
-
-
-    console.log("File Name: " + targetFile.name);
     const reader = new FileReader();
     reader.onload = (e) => {
-
-
       const fileText = e.target.result;
       if (extension === 'c') {
         const parsed = parseCCode(fileText);
-        console.log('Parsed Data:', parsed);
         setParsedData(parsed);
       } else if (extension === 'cpp') {
-        const parsedCpp = (parseCppCode(fileText));
+        const parsedCpp = parseCppCode(fileText);
         setParsedData(parsedCpp);
-        console.log("Parsed CPP data: ", parsedCpp);
       }
-      console.log(fileText);
-      setCodePreviewText(fileText);
-      message.info(`File "${targetFile.name}" previewed. Text sent to code preview pane.`)
+      setCodePreviewText(fileText); // Set the file content to preview text
+      setUploadedCode(fileText); // Ensure this is passed to FlowchartScreen
+      message.info(
+        `File "${targetFile.name}" previewed. Text sent to code preview pane.`
+      );
     };
     reader.readAsText(targetFile);
-  }
+  };
 
   const handleFileRemove = (targetFile) => {
     setUploaderBottomPadding(uploaderBottomPadding - 30);
@@ -181,11 +169,13 @@ export default function UploadScreen() {
     });
     setuploadFileArray(filtered);
     message.info(`File "${targetFile.name}" has been removed.`);
-  }
+  };
   //I have replaced the method that is run on a file deletion with handleFileRemove
   const handleReUpload = () => {
     //setFileUploaded(false); // Reset the upload state
-    setCodePreviewText('Upload and select a source code file to view its contents here.'); // Reset preview text
+    setCodePreviewText(
+      'Upload and select a source code file to view its contents here.'
+    ); // Reset preview text
     setUploaderBottomPadding(20); // Reset padding if needed
   };
 
@@ -194,84 +184,71 @@ export default function UploadScreen() {
       <div className="header" id="heading">
         <h1>Event Driven Visualization Tool</h1>
       </div>
-
       <div id="upload" style={{ paddingBottom: uploaderBottomPadding }}>
-
         <Button
-            className="upload-buttons"
-            onClick={() => {
-              console.log("Upload Files: " + uploadFileArray.length);
-              console.log(uploadFileArray);
-              for (const sourceFile of uploadFileArray) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                  const fileText = e.target.result;
-                  console.log(fileText);
-                };
-                reader.readAsText(sourceFile);
-              }
-              message.info(`File Array details printed to browser console`);
-            }}
-          >
-            Preview Upload File List (For Testing Only)
+          className="upload-buttons"
+          onClick={() => {
+            console.log('Upload Files: ' + uploadFileArray.length);
+            console.log(uploadFileArray);
+            for (const sourceFile of uploadFileArray) {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                const fileText = e.target.result;
+                console.log(fileText);
+              };
+              reader.readAsText(sourceFile);
+            }
+            message.info(`File Array details printed to browser console`);
+          }}
+        >
+          Preview Upload File List (For Testing Only)
         </Button>
-
-      <br></br>
-
-      Input name of directory to be uploaded to cloud
-      <input 
-      value = {uploadDirectoryTitle}
-      onChange={e => setUploadDirectoryTitle(e.target.value)}
-      />
-
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          uploadDirectory(uploadDirectoryTitle, uploadFileArray);
-        }}
-      >
-        Upload Directory
-      </Button>
-
-      <br></br>
-
-      Input name of directory to be downloaded from cloud
-      <input 
-      value = {downloadDirectoryTitle}
-      onChange={e => setDownloadDirectoryTitle(e.target.value)}
-      />
-
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          downloadDirectory(downloadDirectoryTitle, uploadFileArray);
-        }}
-      >
-        Download Directory
-      </Button>
-
-      <br></br>
-
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          setUploaderBottomPadding(260 + (30 * uploadFileArray.length));
-        }}
-      >
-        Reset Padding
-      </Button>
-
-      <br></br>
-
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          listDirectories();
-        }}
-      >
-        List Directories
-      </Button>
-
+        <br></br>
+        Input name of directory to be uploaded to cloud
+        <input
+          value={uploadDirectoryTitle}
+          onChange={(e) => setUploadDirectoryTitle(e.target.value)}
+        />
+        <Button
+          className="upload-buttons"
+          onClick={() => {
+            uploadDirectory(uploadDirectoryTitle, uploadFileArray);
+          }}
+        >
+          Upload Directory
+        </Button>
+        <br></br>
+        Input name of directory to be downloaded from cloud
+        <input
+          value={downloadDirectoryTitle}
+          onChange={(e) => setDownloadDirectoryTitle(e.target.value)}
+        />
+        <Button
+          className="upload-buttons"
+          onClick={() => {
+            downloadDirectory(downloadDirectoryTitle, uploadFileArray);
+          }}
+        >
+          Download Directory
+        </Button>
+        <br></br>
+        <Button
+          className="upload-buttons"
+          onClick={() => {
+            setUploaderBottomPadding(260 + 30 * uploadFileArray.length);
+          }}
+        >
+          Reset Padding
+        </Button>
+        <br></br>
+        <Button
+          className="upload-buttons"
+          onClick={() => {
+            listDirectories();
+          }}
+        >
+          List Directories
+        </Button>
         {!fileUploaded ? (
           <Upload.Dragger
             multiple
@@ -281,10 +258,12 @@ export default function UploadScreen() {
             directory="true"
             fileList={uploadFileArray}
             showUploadList={{
-              showPreviewIcon: true
+              showPreviewIcon: true,
             }}
             //beforeUpload={handleFileUpload}
-            beforeUpload={(file, fileList) => handleDirectoryUpload(file, fileList)}
+            beforeUpload={(file, fileList) =>
+              handleDirectoryUpload(file, fileList)
+            }
             //onPreview={handleFileUpload}
             onPreview={(file) => handleFilePreview(file)}
             //onRemove={handleReUpload}
@@ -329,7 +308,6 @@ export default function UploadScreen() {
           </div>
         )}
       </div>
-
       <h2>List Source Code Files Saved on Cloud</h2>
       <Button
         className="upload-buttons"
@@ -347,36 +325,33 @@ export default function UploadScreen() {
       >
         List C++ Source Files
       </Button>
-
       <h2>Download Source Files</h2>
-      Input name of source code file to be downloaded and displayed in the code preview pane below. File name must include ".c" or ".cpp" extension.
-      <input 
-      value = {downloadFileTitle}
-      onChange={e => setDownloadFileTitle(e.target.value)}
+      Input name of source code file to be downloaded and displayed in the code
+      preview pane below. File name must include ".c" or ".cpp" extension.
+      <input
+        value={downloadFileTitle}
+        onChange={(e) => setDownloadFileTitle(e.target.value)}
       />
-
       <Button
         className="upload-buttons"
         onClick={() => {
-          const reply = "";
+          const reply = '';
           downloadCSourceCodeFile(downloadFileTitle, reply);
           setCodePreviewText(reply);
         }}
       >
         Download C Source Code File
       </Button>
-
       <Button
         className="upload-buttons"
         onClick={() => {
-          const reply = "";
+          const reply = '';
           downloadCPlusPlusSourceCodeFile(downloadFileTitle, reply);
           setCodePreviewText(reply);
         }}
       >
         Download C++ Source Code File
       </Button>
-
       <h2>Code Preview Pane (Editable)</h2>
       <Button
         className="upload-buttons"
@@ -396,20 +371,19 @@ export default function UploadScreen() {
       >
         Dark Mode
       </Button>
-
       <TextInput
         className="text-input"
         style={{
           backgroundColor: codePreviewBGColor,
           color: codePreviewTextColor,
-          width: "80%",
-          height: "70%",
-          minHeight: "200px",
-          padding: "20px",
+          width: '80%',
+          height: '70%',
+          minHeight: '200px',
+          padding: '20px',
           overflow: 'auto',
-          textAlign: "left",
-          marginTop: "5px",
-          marginBottom: "5px",
+          textAlign: 'left',
+          marginTop: '5px',
+          marginBottom: '5px',
           fontFamily: 'monospace',
           whiteSpace: 'pre-line',
         }}
@@ -417,13 +391,12 @@ export default function UploadScreen() {
         value={codePreviewText}
         multiline={true}
       />
-
-      Input name of file to be uploaded to cloud storage here (file name should not have an extension at the end)
-      <input 
-      value = {uploadfileTitle}
-      onChange={e => setUploadFileTitle(e.target.value)}
+      Input name of file to be uploaded to cloud storage here (file name should
+      not have an extension at the end)
+      <input
+        value={uploadfileTitle}
+        onChange={(e) => setUploadFileTitle(e.target.value)}
       />
-
       <Button
         className="upload-buttons"
         onClick={() => {
@@ -432,7 +405,6 @@ export default function UploadScreen() {
       >
         Save Current Code Preview Text as .c File
       </Button>
-
       <Button
         className="upload-buttons"
         onClick={() => {
@@ -441,13 +413,12 @@ export default function UploadScreen() {
       >
         Save Current Code Preview Text as .cpp File
       </Button>
-
-      Input name of parsed code file to be uploaded to cloud storage here (file name should not have an extension at the end)
-      <input 
-      value = {parsedCodeTitle}
-      onChange={e => setParsedCodeTitle(e.target.value)}
+      Input name of parsed code file to be uploaded to cloud storage here (file
+      name should not have an extension at the end)
+      <input
+        value={parsedCodeTitle}
+        onChange={(e) => setParsedCodeTitle(e.target.value)}
       />
-
       <Button
         className="upload-buttons"
         onClick={() => {
@@ -458,7 +429,6 @@ export default function UploadScreen() {
       >
         Reparse Current Code and Upload Parsed Code to Cloud
       </Button>
-
       <Button
         className="continue-button"
         type="primary"

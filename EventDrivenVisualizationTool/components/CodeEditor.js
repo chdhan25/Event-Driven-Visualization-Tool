@@ -4,10 +4,10 @@ import { TextInput, StyleSheet } from 'react-native';
 const CodeEditor = ({ code, onCodeChange }) => {
   return (
     <TextInput
-      style={styles.editor}
+      style={styles.editor} // Make sure 'styles' is defined properly below
       multiline
       value={code}
-      onChangeText={onCodeChange} // This will update the code as the user types
+      onChangeText={onCodeChange}
       placeholder="Edit the C code here..."
       selectionColor="#000"
       autoCapitalize="none"
@@ -15,6 +15,7 @@ const CodeEditor = ({ code, onCodeChange }) => {
   );
 };
 
+// Add this part to define styles
 const styles = StyleSheet.create({
   editor: {
     flex: 1,
