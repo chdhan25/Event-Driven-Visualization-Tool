@@ -1,23 +1,42 @@
-import React from 'react';
-import ReactFlow, { Background, Controls, MiniMap } from 'reactflow';
+import React, { useEffect } from 'react';
+import ReactFlow, {
+  ReactFlowProvider,
+  Controls,
+  Background,
+  useReactFlow,
+} from 'reactflow';
 import 'reactflow/dist/style.css';
 
-export default function Flowchart({ nodes, edges }) {
+
+const Flowchart = ({nodes, edges}) => {
+  // const { nodes, edges} = flowchartData;
+  const { fitView } = useReactFlow();
+  // const { parsedData} = route.params;
+
+   
+
+  useEffect(() => {
+    fitView({ padding: 0.1, includeHiddenNodes: true });
+  }, [fitView]);
+
+
+  
+
+
   return (
-    <div
-      style={{
-        height: '100%', // Use 100% height of the parent container
-        width: '100%', // Use 100% width of the parent container
-        position: 'relative',
-        zIndex: 10,
-        backgroundColor: '#f0f0f0',
-      }}
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+    //  nodeTypes={}
+      defaultZoom={1.5} // Set an initial zoom level (1.5 in this case)
+      fitView // Automatically fit the view when the flowchart is loaded
+      fitViewOptions={{ padding: 0.1 }}
+     // Optionally adjust the padding for fitting
     >
-      <ReactFlow nodes={nodes} edges={edges} fitView>
-        <MiniMap />
-        <Controls />
-        <Background />
-      </ReactFlow>
-    </div>
+      <Background gap={16} />
+      <Controls />
+    </ReactFlow>
   );
-}
+};
+
+export default Flowchart;
