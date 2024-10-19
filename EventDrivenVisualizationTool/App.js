@@ -26,8 +26,11 @@ export default function App() {
         }}
       >
         <Stack.Screen name="UploadScreen" component={UploadScreen} />
-        <Stack.Screen name="VisualizationSelector" component={VisualizationSelectionScreen} />
-        <Stack.Screen name="Flowchart" component={FlowchartScreen} />
+        <Stack.Screen
+          name="VisualizationSelector"
+          component={VisualizationSelectionScreen}
+        />
+        <Stack.Screen name="FlowchartScreen" component={FlowchartScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
