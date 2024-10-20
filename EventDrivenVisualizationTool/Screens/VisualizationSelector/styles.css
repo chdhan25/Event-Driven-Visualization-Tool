@@ -42,7 +42,7 @@
 .option::before {
     content: "";
     display: block;
-    padding-top: 100%;
+    padding-top: 10%;
     position: absolute;
     top: 0;
     left: 0;

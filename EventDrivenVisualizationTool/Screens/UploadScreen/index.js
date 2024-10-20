@@ -68,7 +68,7 @@ export default function UploadScreen() {
 
   const handleContinue = () => {
     if (flowchartData) {
-      navigation.navigate('FlowchartScreen', {
+      navigation.navigate('VisualizationSelector', {
         flowchartData: flowchartData,
         uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
       });
