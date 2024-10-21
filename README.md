@@ -2,6 +2,17 @@
 This tool can automatically convert C and C++ source code files into flowcharts that support editing, cloud storage, and version control. The purpose of these flowcharts is to provide a high-level view of code files to help new hires gain an understanding of legacy code files.
 
 # Release Notes
+## Version 0.3.0
+### New Features
+* Support for Directories: Users can now upload an entire directory of files from their device to the upload screen. In addition, users can now upload an entire directory of files from the application to the cloud, and download a directory of files from the cloud to the application.
+* Support for C++ Files: Our application now has the ability to parse C++ source code files. Files with the .cpp extension can be converted into a flowchart visualization.
+* Improved UI: The upload screen now has a cleaner and more streamlined interface. This should make it easier for users to understand this screen.
+### Bug Fixes
+* Fixed issues related to downloading files from cloud. This feature should work as intended now.
+### Known Issues
+* The tool has been found to crash when uploading larger directories (such as entire repositories) to the upload screen.
+* We plan on reducing the number of features that print important information to the browser console. This important information should instead be displayed within the application itself in either a popup window or a separate screen.
+
 ## Version 0.2.0
 ### New Features
 * Added functionality to list the names of source code files currently stored on the cloud database.
