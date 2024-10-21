@@ -178,265 +178,240 @@ export default function UploadScreen() {
     ); // Reset preview text
     setUploaderBottomPadding(20); // Reset padding if needed
   };
+// ****************** This is what actually shows up on the screen ******************************************
+return (
+  <div className="page-container">
+    <div className="header" id="heading">
+      <h1>Event Driven Visualization Tool</h1>
+    </div>
 
-  return (
-    <div className="page-container">
-      <div className="header" id="heading">
-        <h1>Event Driven Visualization Tool</h1>
-      </div>
-      <div id="upload" style={{ paddingBottom: uploaderBottomPadding }}>
-        <Button
-          className="upload-buttons"
-          onClick={() => {
-            console.log('Upload Files: ' + uploadFileArray.length);
-            console.log(uploadFileArray);
-            for (const sourceFile of uploadFileArray) {
-              const reader = new FileReader();
-              reader.onload = (e) => {
-                const fileText = e.target.result;
-                console.log(fileText);
-              };
-              reader.readAsText(sourceFile);
-            }
-            message.info(`File Array details printed to browser console`);
-          }}
+    {/* File Uploader */}
+    <div id="upload" >
+      {!fileUploaded ? (
+        <Upload.Dragger
+          multiple
+          action="http://localhost:8081/"
+          accepts=".c,.cpp"
+          listType="text"
+          directory="true"
+          fileList={uploadFileArray}
+          showUploadList={{ showPreviewIcon: true }}
+          //beforeUpload={handleFileUpload}
+          beforeUpload={(file, fileList) => handleDirectoryUpload(file, fileList)}
+          //onPreview={handleFileUpload}
+          onPreview={(file) => handleFilePreview(file)}
+          //onRemove={handleReUpload}
+          onRemove={(file) => handleFileRemove(file)}
         >
-          Preview Upload File List (For Testing Only)
-        </Button>
-        <br></br>
-        Input name of directory to be uploaded to cloud
-        <input
-          value={uploadDirectoryTitle}
-          onChange={(e) => setUploadDirectoryTitle(e.target.value)}
-        />
-        <Button
-          className="upload-buttons"
-          onClick={() => {
-            uploadDirectory(uploadDirectoryTitle, uploadFileArray);
-          }}
-        >
-          Upload Directory
-        </Button>
-        <br></br>
-        Input name of directory to be downloaded from cloud
-        <input
-          value={downloadDirectoryTitle}
-          onChange={(e) => setDownloadDirectoryTitle(e.target.value)}
-        />
-        <Button
-          className="upload-buttons"
-          onClick={() => {
-            downloadDirectory(downloadDirectoryTitle, uploadFileArray);
-          }}
-        >
-          Download Directory
-        </Button>
-        <br></br>
-        <Button
-          className="upload-buttons"
-          onClick={() => {
-            setUploaderBottomPadding(260 + 30 * uploadFileArray.length);
-          }}
-        >
-          Reset Padding
-        </Button>
-        <br></br>
-        <Button
-          className="upload-buttons"
-          onClick={() => {
-            listDirectories();
-          }}
-        >
+          <h3>Drag Files Here</h3>
+          <h3>OR</h3>
+          <Button>Upload Directory</Button>
+        </Upload.Dragger>
+      ) : (
+        <div>
+          <h2>Code Preview Pane:</h2>
+          <Button
+            className="upload-buttons"
+            onClick={() => setCodePreviewBGColor('white')}
+          >
+            Light Mode
+          </Button>
+          <Button
+            className="upload-buttons"
+            onClick={() => setCodePreviewBGColor('black')}
+          >
+            Dark Mode
+          </Button>
+          <TextInput
+            style={{
+              backgroundColor: codePreviewBGColor,
+              color: codePreviewTextColor,
+              width: '80%',
+              height: '300px',
+              overflowY: 'auto',
+            }}
+            className="text-input"
+            onChangeText={setCodePreviewText}
+            value={codePreviewText}
+            multiline={true}
+          />
+          <Button onClick={handleReUpload} style={{ marginTop: '20px' }}>
+            Upload New File
+          </Button>
+        </div>
+      )}
+    </div>
+    {/*  **uncomment and delete this text when need to test using this button** <Button
+
+          className="upload-buttons"
+
+          onClick={() => {
+
+            console.log('Upload Files: ' + uploadFileArray.length);
+
+            console.log(uploadFileArray);
+
+            for (const sourceFile of uploadFileArray) {
+
+              const reader = new FileReader();
+
+              reader.onload = (e) => {
+
+                const fileText = e.target.result;
+
+                console.log(fileText);
+
+              };
+
+              reader.readAsText(sourceFile);
+
+            }
+
+            message.info(`File Array details printed to browser console`);
+
+          }}
+
+        >
+
+          Preview Upload File List (For Testing Only)
+
+        </Button> */}
+{/* **uncomment when need to reset padding. Is this necessary?** <Button
+
+          className="upload-buttons"
+
+          onClick={() => {
+
+            setUploaderBottomPadding(260 + 30 * uploadFileArray.length);
+
+          }}
+
+        >
+
+          Reset Padding
+
+        </Button> */}
+
+    {/* Save Buttons Section */}
+    <div id="all-buttons">
+    
+
+      {/* Code Options and List Code Sections */}
+      <div id="list-code">
+      <h2>List Source Code Files Saved on Cloud</h2>
+        <Button className="upload-buttons" onClick={() => listDirectories()}>
           List Directories
         </Button>
-        {!fileUploaded ? (
-          <Upload.Dragger
-            multiple
-            action="http://localhost:8081/"
-            accepts=".c,.cpp"
-            listType="text"
-            directory="true"
-            fileList={uploadFileArray}
-            showUploadList={{
-              showPreviewIcon: true,
-            }}
-            //beforeUpload={handleFileUpload}
-            beforeUpload={(file, fileList) =>
-              handleDirectoryUpload(file, fileList)
-            }
-            //onPreview={handleFileUpload}
-            onPreview={(file) => handleFilePreview(file)}
-            //onRemove={handleReUpload}
-            onRemove={(file) => handleFileRemove(file)}
-          >
-            <p>Drag files here</p>
-            <p>OR</p>
-            <Button>Upload Directory</Button>
-          </Upload.Dragger>
-        ) : (
-          <div>
-            <h2>Code Preview Pane:</h2>
 
-            <Button
-              className="upload-buttons"
-              onClick={() => setCodePreviewBGColor('white')}
-            >
-              Light Mode
-            </Button>
-            <Button
-              className="upload-buttons"
-              onClick={() => setCodePreviewBGColor('black')}
-            >
-              Dark Mode
-            </Button>
-            <TextInput
-              style={{
-                backgroundColor: codePreviewBGColor,
-                color: codePreviewTextColor,
-                width: '80%', // Ensure it takes the full width
-                height: '300px',
-                overflowY: 'auto',
-              }}
-              className="text-input"
-              onChangeText={setCodePreviewText}
-              value={codePreviewText}
-              multiline={true}
-            />
-            <Button onClick={handleReUpload} style={{ marginTop: '20px' }}>
-              Upload New File
-            </Button>
-          </div>
-        )}
+        
+        <Button className="upload-buttons" onClick={() => listCSourceCodeFiles()}>
+          List C Source Files
+        </Button>
+        <Button className="upload-buttons" onClick={() => listCPlusPlusSourceCodeFiles()}>
+          List C++ Source Files
+        </Button>
+        </div>
+
+      {/* Download Code Section */}
+      <div id="download-code">
+        <h2>Download Source Files</h2>
+        <p>
+          Input name of source code file to be downloaded and displayed in the code
+          preview pane below. File name must include ".c" or ".cpp" extension.
+        </p>
+        <input
+          value={downloadFileTitle}
+          onChange={(e) => setDownloadFileTitle(e.target.value)}
+        />
+        <Button
+          className="upload-buttons"
+          onClick={() => {
+            const reply = '';
+            downloadCSourceCodeFile(downloadFileTitle, reply);
+            setCodePreviewText(reply);
+          }}
+        >
+          Download C Source Code File
+        </Button>
+        <Button
+          className="upload-buttons"
+          onClick={() => {
+            const reply = '';
+            downloadCPlusPlusSourceCodeFile(downloadFileTitle, reply);
+            setCodePreviewText(reply);
+          }}
+        >
+          Download C++ Source Code File
+        </Button>
+        <p>Input name of directory to be downloaded from cloud</p>
+      <input
+        value={downloadDirectoryTitle}
+        onChange={(e) => setDownloadDirectoryTitle(e.target.value)}
+      />
+      <Button
+        className="upload-buttons"
+        onClick={() => downloadDirectory(downloadDirectoryTitle, uploadFileArray)}
+      >
+        Download Directory
+      </Button>
       </div>
-      <h2>List Source Code Files Saved on Cloud</h2>
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          listCSourceCodeFiles();
-        }}
-      >
-        List C Source Files
-      </Button>
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          listCPlusPlusSourceCodeFiles();
-        }}
-      >
-        List C++ Source Files
-      </Button>
-      <h2>Download Source Files</h2>
-      Input name of source code file to be downloaded and displayed in the code
-      preview pane below. File name must include ".c" or ".cpp" extension.
+
+      {/* Save Code Section */}
+      <div id="save-code">
+      <h2>Save Current Code to Cloud</h2>
+      <p>Input name of directory to be saved to cloud</p>
       <input
-        value={downloadFileTitle}
-        onChange={(e) => setDownloadFileTitle(e.target.value)}
+        value={uploadDirectoryTitle}
+        onChange={(e) => setUploadDirectoryTitle(e.target.value)}
       />
       <Button
         className="upload-buttons"
-        onClick={() => {
-          const reply = '';
-          downloadCSourceCodeFile(downloadFileTitle, reply);
-          setCodePreviewText(reply);
-        }}
+        onClick={() => uploadDirectory(uploadDirectoryTitle, uploadFileArray)}
       >
-        Download C Source Code File
+        Save Directory
       </Button>
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          const reply = '';
-          downloadCPlusPlusSourceCodeFile(downloadFileTitle, reply);
-          setCodePreviewText(reply);
-        }}
-      >
-        Download C++ Source Code File
-      </Button>
-      <h2>Code Preview Pane (Editable)</h2>
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          setCodePreviewBGColor('white');
-          setCodePreviewTextColor('black');
-        }}
-      >
-        Light Mode
-      </Button>
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          setCodePreviewBGColor('black');
-          setCodePreviewTextColor('white');
-        }}
-      >
-        Dark Mode
-      </Button>
-      <TextInput
-        className="text-input"
-        style={{
-          backgroundColor: codePreviewBGColor,
-          color: codePreviewTextColor,
-          width: '80%',
-          height: '70%',
-          minHeight: '200px',
-          padding: '20px',
-          overflow: 'auto',
-          textAlign: 'left',
-          marginTop: '5px',
-          marginBottom: '5px',
-          fontFamily: 'monospace',
-          whiteSpace: 'pre-line',
-        }}
-        onChangeText={setCodePreviewText}
-        value={codePreviewText}
-        multiline={true}
-      />
-      Input name of file to be uploaded to cloud storage here (file name should
-      not have an extension at the end)
-      <input
-        value={uploadfileTitle}
-        onChange={(e) => setUploadFileTitle(e.target.value)}
-      />
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          uploadCSourceCodeFile(uploadfileTitle, codePreviewText);
-        }}
-      >
-        Save Current Code Preview Text as .c File
-      </Button>
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          uploadCPlusPlusSourceCodeFile(uploadfileTitle, codePreviewText);
-        }}
-      >
-        Save Current Code Preview Text as .cpp File
-      </Button>
+        
+        <Button
+          className="upload-buttons"
+          onClick={() => uploadCSourceCodeFile(uploadfileTitle, codePreviewText)}
+        >
+          Save Current Code Preview Text as .c File
+        </Button>
+        <Button
+          className="upload-buttons"
+          onClick={() => uploadCPlusPlusSourceCodeFile(uploadfileTitle, codePreviewText)}
+        >
+          Save Current Code Preview Text as .cpp File
+        </Button>
+        
+      </div>
+    </div>
+    <p>
       Input name of parsed code file to be uploaded to cloud storage here (file
       name should not have an extension at the end)
-      <input
-        value={parsedCodeTitle}
-        onChange={(e) => setParsedCodeTitle(e.target.value)}
-      />
-      <Button
-        className="upload-buttons"
-        onClick={() => {
-          const parsed = JSON.stringify(parseCCode(codePreviewText));
-          console.log('Parsed Data:', parsed);
-          uploadParsedCode(parsedCodeTitle, parsed);
-        }}
-      >
-        Reparse Current Code and Upload Parsed Code to Cloud
-      </Button>
-      <Button
-        className="continue-button"
-        type="primary"
-        onClick={handleContinue}
-        style={{ marginTop: '20px' }}
-      >
-        Continue
-      </Button>
-    </div>
-  );
+    </p>
+    <input
+      value={parsedCodeTitle}
+      onChange={(e) => setParsedCodeTitle(e.target.value)}
+    />
+    <Button
+      className="upload-buttons"
+      onClick={() => {
+        const parsed = JSON.stringify(parseCCode(codePreviewText));
+        console.log('Parsed Data:', parsed);
+        uploadParsedCode(parsedCodeTitle, parsed);
+      }}
+    >
+      Reparse Current Code and Upload Parsed Code to Cloud
+    </Button>
+    <Button
+      className="continue-button"
+      type="primary"
+      onClick={handleContinue}
+      style={{ marginTop: '20px' }}
+    >
+      Continue
+    </Button>
+  </div>
+);
 }

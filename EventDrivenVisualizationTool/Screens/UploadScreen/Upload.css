@@ -4,74 +4,110 @@
 
 /* Style for the entire page container */
 .page-container {
-    width: 100%;
-    height: 100vh;
-    background-color: white; /* Set the main body to white */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    overflow-y: auto;
-  }
-  
-  /* Header section style */
-  .header {
-    width: 100%;
-    background-color: #9fcce4; /* Set the entire header to blue */
-    padding: 20px;
-    text-align: center;
-  }
-  
-  /* Heading text style */
-  .header h1 {
-    color: black; /* Make the text inside the header white */
-    margin: 0;
-  }
-  
-  /* Upload buttons */
-  .upload-buttons {
-    margin: 10px;
-  }
-  
-  /* Code Preview TextInput style */
-  .text-input {
-    width: 80%;           /* Ensure it's wide enough */
-    height: 300px;        /* Give it a fixed height */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 20px 0;
-    padding: 10px;
-    font-size: 16px;      /* Ensure text is readable */
-    resize: vertical;     /* Allow vertical resizing if needed */
-  }
-  
-  
-  /* Additional styling for the Upload section */
-  
-  #upload {
-    width: 80%;
-    height: 60%;
-    padding: 20px;
-    padding-bottom: 20px; /* Use a CSS variable for the padding */
-    text-align: center;
-    margin-top: 20px;
-    background-color: white;
-    border-radius: 20px;
-  }
+  width: 100%;
+  height: 100vh;
+  background-color: white; /* Set the main body to white */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-y: auto;
+}
 
-  .continue-button {
-    margin-top: 20px;
-    width: 150px; 
-    height: 50px; 
-    background-color: #9fcce4; 
-    color: white; /* Change text color if necessary */
-    border: none; /* Remove border if you want */
-    font-size: 16px; /* Adjust font size as needed */
-  }
+/* Header section style */
+.header {
+  width: 100%;
+  background-color: #9fcce4; /* Set the entire header to blue */
+  padding: 20px;
+  text-align: center;
+}
 
-  input {
-    margin: 5px;
-  }
+/* Heading text style */
+.header h1 {
+  color: black; /* Make the text inside the header white */
+  margin: 0;
+}
+
+/* Upload buttons */
+.upload-buttons {
+  margin: 10px;
+}
+
+/* Code Preview TextInput style */
+.text-input {
+  width: 80%; /* Ensure it's wide enough */
+  height: 300px; /* Give it a fixed height */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 20px 0;
+  padding: 10px;
+  font-size: 16px; /* Ensure text is readable */
+  resize: vertical; /* Allow vertical resizing if needed */
+}
+
+/* Additional styling for the Upload section */
+#upload {
+  
+  width: 80%;
+  height: 300px;
+  padding: 20px;
+  padding-bottom: 20px; /* Use a CSS variable for the padding */
+  text-align: center;
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 20px;
+  margin-bottom: 20px;
   
   
   
+}
+
+.continue-button {
+  margin-top: 20px;
+  width: 150px;
+  height: 50px;
+  background-color: #9fcce4;
+  color: white; /* Change text color if necessary */
+  border: none; /* Remove border if you want */
+  font-size: 16px; /* Adjust font size as needed */
+}
+
+input {
+  margin: 5px;
+}
+
+/* New styles for divs and IDs */
+#code-options,
+#list-code,
+#download-code,
+#save-code {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  
+}
+
+#code-options button,
+#list-code button,
+#download-code button,
+#save-code button {
+  width: 300px; 
+}
+
+.all-buttons {
+  display:flex;
+  flex-direction: row;
+}
+
+.file-download {
+  display: flex;
+  flex-direction: column;
+  
+}
+p {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
