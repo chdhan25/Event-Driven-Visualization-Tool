@@ -47,19 +47,14 @@
 
 /* Additional styling for the Upload section */
 #upload {
-  
   width: 80%;
   height: 300px;
   padding: 20px;
-  padding-bottom: 20px; /* Use a CSS variable for the padding */
   text-align: center;
   margin-top: 20px;
   background-color: white;
   border-radius: 20px;
   margin-bottom: 20px;
-  
-  
-  
 }
 
 .continue-button {
@@ -78,36 +73,64 @@ input {
 
 /* New styles for divs and IDs */
 #code-options,
-#list-code,
-#download-code,
-#save-code {
+#list-code {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
-  
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px;
+  text-align: center;
 }
 
-#code-options button,
-#list-code button,
+#download-code,
+#save-code {
+  flex: 1; /* Allow them to take up equal space */
+  margin: 10px; /* Add margin for spacing between them */
+  flex-direction: column;
+  align-items: center; /* Center elements horizontally */
+  justify-content: center; /* Center elements vertically */
+  text-align: center; /* Center the text inside */
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px;
+}
+
 #download-code button,
-#save-code button {
-  width: 300px; 
+#save-code button,
+#download-code input,
+#save-code input {
+  width: 300px; /* Set the width for consistency */
+  margin-top: 10px; /* Add space between buttons and inputs */
 }
 
-.all-buttons {
-  display:flex;
+#all-buttons {
+  display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 80%; /* Ensure the section doesn't overflow */
 }
 
 .file-download {
   display: flex;
   flex-direction: column;
-  
+  align-items: center;
 }
+
 p {
   width: 60%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#download-code p,
+#save-code p {
+  text-align: center; /* Center text inside the paragraphs */
+  width: 100%; /* Ensure it takes full width of its container */
+  margin: 0 0 10px 0; /* Add spacing below the paragraph if needed */
 }
