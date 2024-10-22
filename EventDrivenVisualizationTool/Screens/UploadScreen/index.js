@@ -386,7 +386,7 @@ return (
         
       </div>
     </div>
-    <p>
+    {/* <p>
       Input name of parsed code file to be uploaded to cloud storage here (file
       name should not have an extension at the end)
     </p>
@@ -403,7 +403,7 @@ return (
       }}
     >
       Reparse Current Code and Upload Parsed Code to Cloud
-    </Button>
+    </Button> */}
     <Button
       className="continue-button"
       type="primary"
