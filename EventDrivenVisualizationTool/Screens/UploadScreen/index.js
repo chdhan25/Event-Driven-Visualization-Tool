@@ -28,6 +28,7 @@ import { useNavigation } from '@react-navigation/native';
 import './Upload.css'; // Import the external CSS file
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
 import '../../Screens/UploadScreen/Upload.css';
+import DropZone from '../../components/DropZone';
 
 export default function UploadScreen() {
   // State Variables
@@ -184,6 +185,9 @@ return (
     <div className="header" id="heading">
       <h1>Event Driven Visualization Tool</h1>
     </div>
+
+    {/* Dropzone Component */}
+    <DropZone />
 
     {/* File Uploader */}
     <div id="upload" >

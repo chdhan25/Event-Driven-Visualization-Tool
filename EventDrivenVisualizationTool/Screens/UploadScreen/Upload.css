@@ -134,3 +134,29 @@ p {
   width: 100%; /* Ensure it takes full width of its container */
   margin: 0 0 10px 0; /* Add spacing below the paragraph if needed */
 }
+
+.dropzone {
+  width: 80%;
+  border: 2px solid black;
+  display: 'flex';
+  flex-direction: 'row';
+  flex-wrap: 'wrap';
+  margin-top: 16px;
+  text-align: 'center';
+  justify-content: 'center';
+}
+
+.dropspace {
+  background-color: gray;
+  border: dashed lightgray;
+  text-align: center;
+  justify-content: center;
+  min-height: 100px;
+  opacity: 60%;
+}
+
+.previewPane {
+  border: 2px solid black;
+  justify-content: left;
+  height: max-content;
+}
