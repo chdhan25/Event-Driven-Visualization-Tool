@@ -14,7 +14,7 @@ export function generateFlowchartData(parsedData) {
         type: 'ISR',
         data: { label: `${isr.type} - ${isr.name}` },
         position: { x: startX, y: currentY },
-        line: isr.line // Place nodes in a vertical line
+        style: { backgroundColor: 'lightblue', color: 'black' }, // ISR node color
       });
 
       currentY += nodeSpacingY; // Move down for the next node
@@ -32,43 +32,25 @@ export function generateFlowchartData(parsedData) {
     });
   }
 
-  // Handle Regular Functions
-  if (parsedData && parsedData.functions) {
-    parsedData.functions.forEach((func, index) => {
-      const nodeId = `func-${index}`;
-      nodes.push({
-        id: nodeId,
-        type: 'Function',
-        data: { label: `Function - ${func.name}` },
-        position: { x: startX, y: currentY },
-         // Continue vertical line
-      });
-
-      currentY += nodeSpacingY; // Move down for the next node
-
-      if (func.connections) {
-        func.connections.forEach((connection, connIndex) => {
-          edges.push({
-            id: `edge-func-${index}-${connIndex}`,
-            source: nodeId,
-            target: `node-${connection}-${connIndex}`,
-            animated: true,
-          });
-        });
-      }
-    });
-  }
-
-  // Handle flowchart elements (operations, assignments, etc.)
+  // Handle flowchart elements (operators, assignments, etc.)
   if (parsedData && parsedData.flowchartElements) {
     parsedData.flowchartElements.forEach((element, index) => {
       const nodeId = `flowchart-${index}`;
+      let style;
+
+      // Set node color based on element type
+      if (element.type === 'assignment') {
+        style = { backgroundColor: 'lightgreen', color: 'black' }; // Assignment color
+      } else if (element.type === 'operator') {
+        style = { backgroundColor: 'lightcoral', color: 'black' }; // Operator color
+      }
+
       nodes.push({
         id: nodeId,
         type: element.type,
         data: { label: element.description },
         position: { x: startX, y: currentY },
-        line: element.line // Place in vertical order
+        style, // Apply the custom style
       });
 
       currentY += nodeSpacingY; // Move down for the next node
@@ -84,9 +66,6 @@ export function generateFlowchartData(parsedData) {
       }
     });
   }
-
-  console.log('Generated Nodes:', nodes);
-  console.log('Generated Edges:', edges);
 
   return { nodes, edges };
 }

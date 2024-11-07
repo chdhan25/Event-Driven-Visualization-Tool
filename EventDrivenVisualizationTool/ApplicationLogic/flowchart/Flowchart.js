@@ -7,31 +7,21 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
-
-const Flowchart = ({nodes, edges}) => {
-  // const { nodes, edges} = flowchartData;
+const Flowchart = ({ nodes, edges }) => {
   const { fitView } = useReactFlow();
-  // const { parsedData} = route.params;
 
-   
-
+  // Fit the view when the component loads
   useEffect(() => {
     fitView({ padding: 0.1, includeHiddenNodes: true });
   }, [fitView]);
-
-
-  
-
 
   return (
     <ReactFlow
       nodes={nodes}
       edges={edges}
-    //  nodeTypes={}
-      defaultZoom={1.5} // Set an initial zoom level (1.5 in this case)
       fitView // Automatically fit the view when the flowchart is loaded
       fitViewOptions={{ padding: 0.1 }}
-     // Optionally adjust the padding for fitting
+      defaultZoom={1.5} // Set an initial zoom level
     >
       <Background gap={16} />
       <Controls />
