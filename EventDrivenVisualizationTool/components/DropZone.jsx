@@ -3,7 +3,8 @@ import { useDropzone } from 'react-dropzone'
 import { Button, message } from 'antd'
 import { TextInput } from 'react-native-web';
 
-const DropZone = () => {
+const DropZone = (props) => {
+    const [fileList, setFileList] = [props.fileArray, props.fileArraySetter];
     const {getRootProps, getInputProps} = useDropzone({
         accept: {
             'text/plain': [".c", ".cpp"]
@@ -13,7 +14,6 @@ const DropZone = () => {
             message.success("Files Uploaded");
         }
     });
-    const [fileList, setFileList] = useState([]);
     const [previewTitle, setPreviewTitle] = useState("No File Selected");
     const [previewText, setPreviewText] = useState("Select a file to view its text here");    
 

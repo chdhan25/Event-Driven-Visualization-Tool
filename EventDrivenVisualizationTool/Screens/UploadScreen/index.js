@@ -55,6 +55,8 @@ export default function UploadScreen() {
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedCpp, setParsedCpp] = useState(new Array());
 
+  const [dropzoneFileList, setDropzoneFileList] = useState([]);
+
   const navigation = useNavigation();
   const app = initializeApp(firebaseConfig);
 
@@ -187,7 +189,10 @@ return (
     </div>
 
     {/* Dropzone Component */}
-    <DropZone />
+    <DropZone 
+      fileArray = {dropzoneFileList}
+      fileArraySetter = {setDropzoneFileList}
+    />
 
     {/* File Uploader */}
     <div id="upload" >
