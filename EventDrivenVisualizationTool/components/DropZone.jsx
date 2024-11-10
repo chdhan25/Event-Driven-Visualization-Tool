@@ -5,12 +5,14 @@ import { TextInput } from 'react-native-web';
 
 const DropZone = (props) => {
     const [fileList, setFileList] = [props.fileArray, props.fileArraySetter];
+    const dropMethod = props.onDrop;
     const {getRootProps, getInputProps} = useDropzone({
         accept: {
             'text/plain': [".c", ".cpp"]
         },
         onDrop: acceptedFiles => {
             setFileList(acceptedFiles);
+            dropMethod(acceptedFiles);
             message.success("Files Uploaded");
         }
     });

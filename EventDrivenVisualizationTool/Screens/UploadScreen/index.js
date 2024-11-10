@@ -55,7 +55,7 @@ export default function UploadScreen() {
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedCpp, setParsedCpp] = useState(new Array());
 
-  const [dropzoneFileList, setDropzoneFileList] = useState([]);
+  const [dropzoneFileList, setDropzoneFileList] = useState(new Array());
 
   const navigation = useNavigation();
   const app = initializeApp(firebaseConfig);
@@ -79,6 +79,26 @@ export default function UploadScreen() {
       message.warning('Please upload a valid code file before continuing.');
     }
   };
+
+  const handleDropzoneUpload = (fileArray) => {
+    fileArray.forEach((targetFile) => {
+      const extension = targetFile.name.split('.').pop().toLowerCase();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const fileText = e.target.result;
+        if (extension === 'c') {
+          const parsed = parseCCode(fileText);
+          setParsedData(parsed);
+        } else if (extension === 'cpp') {
+          const parsedCpp = parseCppCode(fileText);
+          setParsedData(parsedCpp);
+        }
+        setCodePreviewText(fileText); // Set the file content to preview text
+        setUploadedCode(fileText); // Ensure this is passed to FlowchartScreen
+      };
+      reader.readAsText(targetFile);
+      });
+  }
 
   //I have replaced the method ran on upload to handleDirectoryUpload
   const handleFileUpload = (file) => {
@@ -192,6 +212,7 @@ return (
     <DropZone 
       fileArray = {dropzoneFileList}
       fileArraySetter = {setDropzoneFileList}
+      onDrop = {handleDropzoneUpload}
     />
 
     {/* File Uploader */}
