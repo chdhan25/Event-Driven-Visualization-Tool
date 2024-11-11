@@ -1,10 +1,5 @@
 import React, { useEffect } from 'react';
-import ReactFlow, {
-  ReactFlowProvider,
-  Controls,
-  Background,
-  useReactFlow,
-} from 'reactflow';
+import ReactFlow, { Controls, Background, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 import { ISRNode, ProcessNode, EndNode } from './CustomNodes';
@@ -26,10 +21,10 @@ const Flowchart = ({ nodes, edges }) => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
+      nodeTypes={nodeTypes}
       fitView
       fitViewOptions={{ padding: 0.1 }}
       defaultZoom={1.5}
-      nodeTypes={nodeTypes}
     >
       <Background gap={16} />
       <Controls />
