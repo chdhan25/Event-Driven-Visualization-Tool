@@ -6,10 +6,10 @@ export const ISRNode = ({ data }) => (
     style={{
       padding: '10px',
       border: '1px solid black',
-      background: '#f0f8ff', // Light blue for ISR nodes
+      background: '#f0f8ff',
     }}
   >
-    <strong>ISR: {data.label}</strong>
+    <strong>{data.label}</strong>
   </div>
 );
 
@@ -19,7 +19,7 @@ export const ProcessNode = ({ data }) => (
     style={{
       padding: '10px',
       border: '1px solid black',
-      background: '#d3f8d3', // Light green for generic operations
+      background: '#d3f8d3',
     }}
   >
     <strong>{data.label}</strong>
@@ -32,11 +32,9 @@ export const EndNode = ({ data }) => (
     style={{
       padding: '10px',
       border: '1px solid black',
-      background: '#f8d3d3', // Light red for end nodes
+      background: '#f8d3d3',
     }}
   >
-    <strong>End: {data.label}</strong>
+    <strong>{data.label}</strong>
   </div>
 );
-
-// Additional node types as needed
