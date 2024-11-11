@@ -201,6 +201,7 @@ export default function UploadScreen() {
     ); // Reset preview text
     setUploaderBottomPadding(20); // Reset padding if needed
   };
+  
 // ****************** This is what actually shows up on the screen ******************************************
 return (
   <div className="page-container">
@@ -210,67 +211,42 @@ return (
 
     {/* Dropzone Component */}
     <DropZone 
+      className = "dropzone-container"
       fileArray = {dropzoneFileList}
       fileArraySetter = {setDropzoneFileList}
       onDrop = {handleDropzoneUpload}
-    />
+    >
+      {({
+          getRootProps,
+          getInputProps,
+          isDragActive,
+          isDragAccept,
+          isDragReject
+        }) => {
+          const additionalClass = isDragAccept
+            ? "accept"
+            : isDragReject
+            ? "reject"
+            : "";
 
-    {/* File Uploader */}
-    <div id="upload" >
-      {!fileUploaded ? (
-        <Upload.Dragger
-          multiple
-          action="http://localhost:8081/"
-          accepts=".c,.cpp"
-          listType="text"
-          directory="true"
-          fileList={uploadFileArray}
-          showUploadList={{ showPreviewIcon: true }}
-          //beforeUpload={handleFileUpload}
-          beforeUpload={(file, fileList) => handleDirectoryUpload(file, fileList)}
-          //onPreview={handleFileUpload}
-          onPreview={(file) => handleFilePreview(file)}
-          //onRemove={handleReUpload}
-          onRemove={(file) => handleFileRemove(file)}
-        >
-          <h3>Drag Files Here</h3>
-          <h3>OR</h3>
-          <Button>Upload Directory</Button>
-        </Upload.Dragger>
-      ) : (
-        <div>
-          <h2>Code Preview Pane:</h2>
-          <Button
-            className="upload-buttons"
-            onClick={() => setCodePreviewBGColor('white')}
-          >
-            Light Mode
-          </Button>
-          <Button
-            className="upload-buttons"
-            onClick={() => setCodePreviewBGColor('black')}
-          >
-            Dark Mode
-          </Button>
-          <TextInput
-            style={{
-              backgroundColor: codePreviewBGColor,
-              color: codePreviewTextColor,
-              width: '80%',
-              height: '300px',
-              overflowY: 'auto',
-            }}
-            className="text-input"
-            onChangeText={setCodePreviewText}
-            value={codePreviewText}
-            multiline={true}
-          />
-          <Button onClick={handleReUpload} style={{ marginTop: '20px' }}>
-            Upload New File
-          </Button>
-        </div>
-      )}
-    </div>
+          return (
+            <div
+              {...getRootProps({
+                className: `dropzone ${additionalClass}`
+              })}
+            >
+              <input {...getInputProps()} />
+              <span>{isDragActive ? "📂" : "📁"}</span>
+              <p>Drag'n'drop images, or click to select files</p>
+            </div>
+          );
+        }}
+
+    </DropZone>
+
+    
+        
+   
     {/*  **uncomment and delete this text when need to test using this button** <Button
 
           className="upload-buttons"
@@ -327,7 +303,7 @@ return (
     
 
       {/* Code Options and List Code Sections */}
-      <div id="list-code">
+      {/* <div id="list-code">
       <h2>List Source Code Files Saved on Cloud</h2>
         <Button className="upload-buttons" onClick={() => listDirectories()}>
           List Directories
@@ -340,10 +316,10 @@ return (
         <Button className="upload-buttons" onClick={() => listCPlusPlusSourceCodeFiles()}>
           List C++ Source Files
         </Button>
-        </div>
+        </div> */}
 
       {/* Download Code Section */}
-      <div id="download-code">
+      {/* <div id="download-code">
         <h2>Download Source Files</h2>
         <p>
           Input name of source code file to be downloaded and displayed in the code
@@ -384,10 +360,10 @@ return (
       >
         Download Directory
       </Button>
-      </div>
+      </div> */}
 
       {/* Save Code Section */}
-      <div id="save-code">
+      {/* <div id="save-code">
       <h2>Save Current Code to Cloud</h2>
       <p>Input name of directory to be saved to cloud</p>
       <input
@@ -414,7 +390,7 @@ return (
           Save Current Code Preview Text as .cpp File
         </Button>
         
-      </div>
+      </div> */}
     </div>
     {/* <p>
       Input name of parsed code file to be uploaded to cloud storage here (file
