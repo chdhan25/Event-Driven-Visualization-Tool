@@ -37,13 +37,12 @@
 /* Code Preview TextInput style */
 .text-input {
   width: 80%; /* Ensure it's wide enough */
-  height: 300px; /* Give it a fixed height */
+  height: 200%; /* Give it a fixed height */
   border: 1px solid #ccc;
   border-radius: 5px;
   margin: 20px 0;
-  padding: 10px;
+  padding-top: 30px;
   font-size: 16px; /* Ensure text is readable */
-  resize: vertical; /* Allow vertical resizing if needed */
 }
 
 /* Additional styling for the Upload section */
@@ -154,7 +153,7 @@ p {
 .previewPane {
   border: 2px solid black;
   justify-content: left;
-  height: 60%;
+  height: 200px;
 }
 
 .dropzone {

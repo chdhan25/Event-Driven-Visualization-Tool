@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Upload, Button, message } from 'antd';
 import { TextInput } from 'react-native-web';
 import { initializeApp } from 'firebase/app';
+import PreviewScreen from '../PreviewScreen';
 /*import {
   getStorage,
   ref,
@@ -74,6 +75,19 @@ export default function UploadScreen() {
       navigation.navigate('VisualizationSelector', {
         flowchartData: flowchartData,
         uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
+      });
+    } else {
+      message.warning('Please upload a valid code file before continuing.');
+    }
+  };
+  const handlePreview = () => {
+    if (flowchartData) {
+      console.log(dropzoneFileList); //
+      navigation.navigate('Preview', {
+        flowchartData: flowchartData,
+        uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
+        dropzoneFileList: dropzoneFileList,
+        parsedData: parsedData,
       });
     } else {
       message.warning('Please upload a valid code file before continuing.');
@@ -417,6 +431,14 @@ return (
       style={{ marginTop: '20px' }}
     >
       Continue
+    </Button>
+    <Button
+      className="preview-button"
+      type="primary"
+      onClick={handlePreview}
+      style={{ marginTop: '20px' }}
+    >
+      Preview Repository
     </Button>
   </div>
 );
