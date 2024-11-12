@@ -2,6 +2,16 @@
 This tool can automatically convert C and C++ source code files into flowcharts that support editing, cloud storage, and version control. The purpose of these flowcharts is to provide a high-level view of code files to help new hires gain an understanding of legacy code files.
 
 # Release Notes
+## Version 0.4.0
+### New Features
+* Added new dropzone uploader. This component can more efficiently support directory uploads containing a large number of files.
+* Added color coding to Flowchart Visualization Nodes.
+* Various UI updates (we have removed the directory cloud functionality, so we can focus on saving flowchart data to the cloud instead of source code files).
+### Bug Fixes
+* Upload support for larger code repositories has been improved.
+### Known Issues
+* We need to add a legend for color-coded nodes
+
 ## Version 0.3.0
 ### New Features
 * Support for Directories: Users can now upload an entire directory of files from their device to the upload screen. In addition, users can now upload an entire directory of files from the application to the cloud, and download a directory of files from the cloud to the application.
