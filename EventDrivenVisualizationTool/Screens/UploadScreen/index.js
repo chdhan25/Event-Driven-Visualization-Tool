@@ -222,6 +222,7 @@ return (
     <div className="header" id="heading">
       <h1>Event Driven Visualization Tool</h1>
     </div>
+    <div className="circle-background"></div>
 
     {/* Dropzone Component */}
     <DropZone 
