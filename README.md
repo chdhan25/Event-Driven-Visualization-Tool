@@ -10,7 +10,7 @@ This tool can automatically convert C and C++ source code files into flowcharts 
 ### Bug Fixes
 * Upload support for larger code repositories has been improved.
 ### Known Issues
-* We need to add a legend for color-coded nodes
+* We need to add a legend for color-coded nodes.
 
 ## Version 0.3.0
 ### New Features
