@@ -3,6 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import UploadScreen from './Screens/UploadScreen';
 import VisualizationSelectionScreen from './Screens/VisualizationSelector';
+import PreviewScreen from './Screens/PreviewScreen';
+
 import FlowchartScreen from './Screens/FlowchartScreen'; // Import the FlowchartScreen
 
 const Stack = createNativeStackNavigator();
@@ -26,10 +28,14 @@ export default function App() {
         }}
       >
         <Stack.Screen name="UploadScreen" component={UploadScreen} />
+        <Stack.Screen name="Preview" component={PreviewScreen} /> 
+
         <Stack.Screen
           name="VisualizationSelector"
           component={VisualizationSelectionScreen}
         />
+
+
         <Stack.Screen name="FlowchartScreen" component={FlowchartScreen} />
       </Stack.Navigator>
     </NavigationContainer>

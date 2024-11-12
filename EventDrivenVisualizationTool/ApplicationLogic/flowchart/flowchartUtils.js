@@ -1,11 +1,13 @@
 export function generateFlowchartData(parsedData) {
   const nodes = [];
   const edges = [];
-  const nodeSpacingY = 150; // Space between nodes vertically
-  const startX = 100; // Starting X position for nodes
-  let currentY = 50; // Starting Y position
+  const nodeSpacingY = 150;
+  const isrStartX = 100; // X position for ISRs
+  const functionStartX = 400; // X position for other flowchart elements
+  let currentYISR = 50; // Y position for ISR nodes
+  let currentYFunction = 50; // Y position for other flowchart elements
 
-  // Handle ISRs
+  // Process ISR nodes
   if (parsedData && parsedData.isrs) {
     parsedData.isrs.forEach((isr, index) => {
       const nodeId = `isr-${index}`;
@@ -13,57 +15,46 @@ export function generateFlowchartData(parsedData) {
         id: nodeId,
         type: 'ISR',
         data: { label: `${isr.type} - ${isr.name}` },
-        position: { x: startX, y: currentY },
-        style: { backgroundColor: 'lightblue', color: 'black' }, // ISR node color
+        position: { x: isrStartX, y: currentYISR },
+        style: { backgroundColor: 'lightblue', color: 'black' },
       });
-
-      currentY += nodeSpacingY; // Move down for the next node
-
-      if (isr.connections) {
-        isr.connections.forEach((connection, connIndex) => {
-          edges.push({
-            id: `edge-isr-${index}-${connIndex}`,
-            source: nodeId,
-            target: `node-${connection}-${connIndex}`,
-            animated: true,
-          });
-        });
-      }
+      currentYISR += nodeSpacingY; // Position the next ISR node
     });
   }
 
-  // Handle flowchart elements (operators, assignments, etc.)
+  // Process flowchart elements (operations, assignments, etc.)
   if (parsedData && parsedData.flowchartElements) {
     parsedData.flowchartElements.forEach((element, index) => {
       const nodeId = `flowchart-${index}`;
       let style;
 
-      // Set node color based on element type
-      if (element.type === 'assignment') {
-        style = { backgroundColor: 'lightgreen', color: 'black' }; // Assignment color
-      } else if (element.type === 'operator') {
-        style = { backgroundColor: 'lightcoral', color: 'black' }; // Operator color
+      // Style nodes based on their type
+      if (element.type === 'Process') {
+        style = { backgroundColor: 'lightgreen', color: 'black' };
+      } else if (element.type === 'End') {
+        style = { backgroundColor: 'lightpink', color: 'black' };
+      } else {
+        style = { backgroundColor: '#f0f0f0', color: 'black' }; // Default
       }
 
       nodes.push({
         id: nodeId,
         type: element.type,
         data: { label: element.description },
-        position: { x: startX, y: currentY },
-        style, // Apply the custom style
+        position: { x: functionStartX, y: currentYFunction },
+        style,
       });
 
-      currentY += nodeSpacingY; // Move down for the next node
-
       if (index > 0) {
-        // Connect to the previous element
         edges.push({
-          id: `edge-flowchart-${index - 1}-${index}`,
+          id: `edge-${index - 1}-${index}`,
           source: `flowchart-${index - 1}`,
           target: nodeId,
           animated: true,
         });
       }
+
+      currentYFunction += nodeSpacingY; // Position the next element
     });
   }
 

@@ -12,6 +12,7 @@
   justify-content: flex-start;
   align-items: center;
   overflow-y: auto;
+  font-family:sans-serif;
 }
 
 /* Header section style */
@@ -36,26 +37,16 @@
 /* Code Preview TextInput style */
 .text-input {
   width: 80%; /* Ensure it's wide enough */
-  height: 300px; /* Give it a fixed height */
+  height: 200%; /* Give it a fixed height */
   border: 1px solid #ccc;
   border-radius: 5px;
   margin: 20px 0;
-  padding: 10px;
+  padding-top: 30px;
   font-size: 16px; /* Ensure text is readable */
-  resize: vertical; /* Allow vertical resizing if needed */
 }
 
 /* Additional styling for the Upload section */
-#upload {
-  width: 80%;
-  height: 300px;
-  padding: 20px;
-  text-align: center;
-  margin-top: 20px;
-  background-color: white;
-  border-radius: 20px;
-  margin-bottom: 20px;
-}
+
 
 .continue-button {
   margin-top: 20px;
@@ -137,26 +128,77 @@ p {
 
 .dropzone {
   width: 80%;
-  border: 2px solid black;
+  /* border: 2px solid black; */
   display: 'flex';
   flex-direction: 'row';
   flex-wrap: 'wrap';
   margin-top: 16px;
   text-align: 'center';
   justify-content: 'center';
+  height: 60%;
 }
 
 .dropspace {
-  background-color: gray;
+  background-color: rgb(201, 201, 201);
   border: dashed lightgray;
   text-align: center;
   justify-content: center;
-  min-height: 100px;
+  align-items: center;
+  
   opacity: 60%;
+  height:20%
 }
+
 
 .previewPane {
   border: 2px solid black;
   justify-content: left;
-  height: max-content;
+  height: 200px;
+}
+
+.dropzone {
+   /* Adds a border to signify the drop area */
+  border-radius: 10px;        /* Softens the border corners */
+  padding: 30px;              /* Creates space inside the dropzone */
+  background-color: #f9f9f9;  /* Light background color */
+  text-align: center;         /* Center any text inside */
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transition for hover */
+
+  /* Allows the component to be responsive */
+  max-width: 100%;
+  margin: 20px auto;          /* Centering with margin */
+  width: 80%;
+  height:100%
+  
+}
+
+.dropzone:hover {
+  border: 2px dashed #4a90e2;
+}
+
+.dropzone p {
+  font-size: 1rem;          /* Sets font size for any instructions */
+  color: #555;              /* Light gray text color */
+  margin: 0;                /* Removes default margin */
+}
+
+.dropzone.active {
+  background-color: #d3f0ff; /* Slightly darker background while dragging a file */
+  border-color: #005bb5;     /* Changes border color on drag */
+}
+
+
+
+/* Individual preview item */
+.preview-item {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #fafafa;
 }
