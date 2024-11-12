@@ -47,25 +47,10 @@ const DropZone = (props) => {
         }
     </div>
     <aside>
-        <h4>Files (Click on a File's Listing to Preview its text)</h4>
         <ul>{previewList}</ul>
         
     </aside>
-    <div className='previewPane'>
-        <h4>{previewTitle}</h4>
-        <TextInput
-        value={previewText}
-        multiline={true}
-        readOnly={true}
-        style={{
-            width: "100%",
-            minHeight: "300px",
-            height: "max-content",
-            border: "1px dashed black",
-            fontFamily: "monospace"
-        }}
-        />
-    </div>
+
     </section>
     );
 };
