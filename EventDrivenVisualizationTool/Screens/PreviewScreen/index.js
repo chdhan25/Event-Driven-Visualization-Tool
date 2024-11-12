@@ -26,17 +26,17 @@ const PreviewScreen = (props) => {
   //   }
   // }, [parsedData]);
 
-  // const handleContinue = () => {
-  //   if (flowchartData) {
-  //     console.log(flowchartData);
-  //     navigation.navigate('VisualizationSelector', {
-  //       flowchartData: flowchartData,
-  //       uploadedCode: previewText, // This is the file content to show in CodeEditor
-  //     });
-  //   } else {
-  //     message.warning('Please upload a valid code file before continuing.');
-  //   }
-  // };
+   const handleContinue = () => {
+     if (flowchartData) {
+       console.log(flowchartData);
+       navigation.navigate('VisualizationSelector', {
+         flowchartData: flowchartData,
+         uploadedCode: previewText, // This is the file content to show in CodeEditor
+       });
+     } else {
+       message.warning('Please upload a valid code file before continuing.');
+     }
+   };
 
 
 
