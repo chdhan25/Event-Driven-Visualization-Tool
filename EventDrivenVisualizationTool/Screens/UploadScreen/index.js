@@ -12,16 +12,9 @@ import PreviewScreen from '../PreviewScreen';
 } from 'firebase/storage';*/
 import {
   firebaseConfig,
-  listCSourceCodeFiles,
-  listCPlusPlusSourceCodeFiles,
-  listDirectories,
-  uploadCSourceCodeFile,
-  uploadCPlusPlusSourceCodeFile,
-  downloadCSourceCodeFile,
-  downloadCPlusPlusSourceCodeFile,
-  downloadDirectory,
+  listFlowcharts,
   uploadParsedCode,
-  uploadDirectory,
+  downloadParsedCode,
 } from '../../ApplicationLogic/firebase';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
@@ -39,15 +32,8 @@ export default function UploadScreen() {
     'Upload and select a source code file to view its contents here.'
   );
   const [uploadFileArray, setuploadFileArray] = useState(new Array());
-  const [uploadDirectoryTitle, setUploadDirectoryTitle] =
-    useState('uploadFolder');
-  const [downloadDirectoryTitle, setDownloadDirectoryTitle] =
-    useState('downloadFolder');
-  const [uploadfileTitle, setUploadFileTitle] = useState('Code');
-  const [downloadFileTitle, setDownloadFileTitle] = useState('Old_Code');
-  const [parsedCodeTitle, setParsedCodeTitle] = useState('Flowchart');
-  const [codePreviewTextColor, setCodePreviewTextColor] = useState('black');
-  const [codePreviewBGColor, setCodePreviewBGColor] = useState('white');
+  const [uploadFlowchartTitle, setUploadFlowchartTitle] = useState('');
+  const [downloadFlowchartTitle, setDownloadFlowchartTitle] = useState('');
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
   const [uploadedCode, setUploadedCode] = useState(''); // State to store the uploaded code
@@ -77,7 +63,7 @@ export default function UploadScreen() {
         uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
       });
     } else {
-      message.warning('Please upload a valid code file before continuing.');
+      message.warning('Please upload a valid code file or download a valid flowchart before continuing.');
     }
   };
   const handlePreview = () => {
@@ -318,94 +304,74 @@ return (
     
 
       {/* Code Options and List Code Sections */}
-      {/* <div id="list-code">
-      <h2>List Source Code Files Saved on Cloud</h2>
-        <Button className="upload-buttons" onClick={() => listDirectories()}>
-          List Directories
+      <div id="list-code">
+      <h2>List Flowchart Visualizations Saved on Cloud</h2>
+        <Button className="upload-buttons" onClick={() => listFlowcharts()}>
+          List Flowcharts
         </Button>
-
-        
-        <Button className="upload-buttons" onClick={() => listCSourceCodeFiles()}>
-          List C Source Files
-        </Button>
-        <Button className="upload-buttons" onClick={() => listCPlusPlusSourceCodeFiles()}>
-          List C++ Source Files
-        </Button>
-        </div> */}
+        </div>
 
       {/* Download Code Section */}
-      {/* <div id="download-code">
-        <h2>Download Source Files</h2>
+      <div id="download-code">
+        <h2>Download Flowchart Data</h2>
         <p>
-          Input name of source code file to be downloaded and displayed in the code
-          preview pane below. File name must include ".c" or ".cpp" extension.
+          Input name of flowchart to be downloaded.
         </p>
         <input
-          value={downloadFileTitle}
-          onChange={(e) => setDownloadFileTitle(e.target.value)}
+          value={downloadFlowchartTitle}
+          onChange={(e) => setDownloadFlowchartTitle(e.target.value)}
         />
         <Button
           className="upload-buttons"
           onClick={() => {
-            const reply = '';
-            downloadCSourceCodeFile(downloadFileTitle, reply);
-            setCodePreviewText(reply);
+            if (downloadFlowchartTitle != '') {
+              downloadParsedCode(downloadFlowchartTitle, setFlowchartData);
+            } else {
+              message.error("Please input a name for the flowchart to be downloaded.");
+            }
+            
           }}
         >
-          Download C Source Code File
+          Download Flowchart
         </Button>
+
+        <Button 
+        className="upload-buttons"
+        onClick={() => {console.log("Preview: " + flowchartData)}}
+        >
+          Preview Flowchart Data
+        </Button>
+      </div>
+
+      {/* Save Code Section */}
+      <div id="save-code">
+        <h2>Save Current Parsed Data to Cloud as a flowchart</h2>
+        <p>Input name of flowchart to be saved to cloud</p>
+        <input
+          value={uploadFlowchartTitle}
+          onChange={(e) => setUploadFlowchartTitle(e.target.value)}
+        />
         <Button
           className="upload-buttons"
           onClick={() => {
-            const reply = '';
-            downloadCPlusPlusSourceCodeFile(downloadFileTitle, reply);
-            setCodePreviewText(reply);
+            if (flowchartData) {
+              if (uploadFlowchartTitle != '') {
+                const parsed = JSON.stringify(flowchartData);
+                console.log('Parsed Data:', parsed);
+                uploadParsedCode(uploadFlowchartTitle, parsed);
+              } else {
+                message.error("Please input a name for the flowchart to be uploaded");
+              }
+              
+            } else {
+              message.error("Please upload a valid code file or download a valid flowchart before continuing.");
+            }
+            
           }}
         >
-          Download C++ Source Code File
+          Save Flowchart Data
         </Button>
-        <p>Input name of directory to be downloaded from cloud</p>
-      <input
-        value={downloadDirectoryTitle}
-        onChange={(e) => setDownloadDirectoryTitle(e.target.value)}
-      />
-      <Button
-        className="upload-buttons"
-        onClick={() => downloadDirectory(downloadDirectoryTitle, uploadFileArray)}
-      >
-        Download Directory
-      </Button>
-      </div> */}
-
-      {/* Save Code Section */}
-      {/* <div id="save-code">
-      <h2>Save Current Code to Cloud</h2>
-      <p>Input name of directory to be saved to cloud</p>
-      <input
-        value={uploadDirectoryTitle}
-        onChange={(e) => setUploadDirectoryTitle(e.target.value)}
-      />
-      <Button
-        className="upload-buttons"
-        onClick={() => uploadDirectory(uploadDirectoryTitle, uploadFileArray)}
-      >
-        Save Directory
-      </Button>
-        
-        <Button
-          className="upload-buttons"
-          onClick={() => uploadCSourceCodeFile(uploadfileTitle, codePreviewText)}
-        >
-          Save Current Code Preview Text as .c File
-        </Button>
-        <Button
-          className="upload-buttons"
-          onClick={() => uploadCPlusPlusSourceCodeFile(uploadfileTitle, codePreviewText)}
-        >
-          Save Current Code Preview Text as .cpp File
-        </Button>
-        
-      </div> */}
+      </div>
     </div>
     {/* <p>
       Input name of parsed code file to be uploaded to cloud storage here (file
