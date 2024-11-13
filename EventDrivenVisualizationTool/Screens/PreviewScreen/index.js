@@ -4,27 +4,34 @@ import { Button, message } from 'antd'
 import { ScrollView, TextInput } from 'react-native-web';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
+import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
+import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 
 
 const PreviewScreen = (props) => {
   
   const route = useRoute();
   const navigation = useNavigation();
-  const { flowchartData, uploadedCode, dropzoneFileList, parsedData } = route.params || {};
+  const { uploadedCode, dropzoneFileList } = route.params || {};
 
   const [previewText, setPreviewText] = useState("Select a file to view its text here");  
+  const [flowchartData, setFlowchartData] = useState(null);
+  const [parsedCpp, setParsedCpp] = useState(new Array());
+  const [parsedC, setParsedC] = useState(new Array());
+  const [parsedData, setParsedData] = useState(null);
 
     
+  useEffect(() => {
+    if (parsedData) {
+      const flowData = generateFlowchartData(parsedData);
+      console.log('preview screen flowchart data:', flowData);
+
+      setFlowchartData(flowData);
+      console.log('parsed data in useEffect', parsedData);
+    }
+  }, [parsedData]);
 
 
-  // useEffect(() => {
-  //   if (parsedData) {
-  //     const flowData = generateFlowchartData(parsedData);
-  //     console.log('Generated Flowchart Data:', flowData);
-  //     setFlowchartData(flowData);
-  //     console.log('parsed data in useEffect', parsedData);
-  //   }
-  // }, [parsedData]);
 
    const handleContinue = () => {
      if (flowchartData) {
@@ -46,13 +53,18 @@ const PreviewScreen = (props) => {
         onClick={() => {
             const reader = new FileReader();
             reader.onload = (e) => {
-
-                const fileText = e.target.result;
-                //console.log(fileText);
-    
-
+              const fileName = file.name;
+              const extension = fileName.split('.').pop().toLowerCase();
+              const fileText = e.target.result;
+              if (extension === 'c') {
+                const parsed = parseCCode(fileText);
+                setParsedData(parsed);
+              } else if (extension === 'cpp') {
+                const parsedCpp = parseCppCode(fileText);
+                setParsedData(parsedCpp);
+              }
                 setPreviewText(fileText);
-                console.log(fileText);
+                console.log("this is file text" +fileText);
 
             }
   
@@ -72,11 +84,11 @@ const PreviewScreen = (props) => {
         <ul>{previewList}</ul>
         <div className='previewPane'>
         <TextInput
-        style={{width: '95%'}}
+        // style={{width: '95%'}}
         value={previewText}
         multiline={true}
         readOnly={true}
-
+        style={{ width: '100%', height: '100%', boxSizing: 'border-box', padding: '10px' }}
         />
     </div>
         
