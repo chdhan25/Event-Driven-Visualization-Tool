@@ -55,6 +55,7 @@ export default function UploadScreen() {
   const [cppFiles, setCppFiles] = useState(new Array());
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedCpp, setParsedCpp] = useState(new Array());
+ 
 
   const [dropzoneFileList, setDropzoneFileList] = useState(new Array());
 
@@ -72,6 +73,7 @@ export default function UploadScreen() {
 
   const handleContinue = () => {
     if (flowchartData) {
+      console.log("This is uploaded code"+ uploadedCode)
       navigation.navigate('VisualizationSelector', {
         flowchartData: flowchartData,
         uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
@@ -87,7 +89,7 @@ export default function UploadScreen() {
         flowchartData: flowchartData,
         uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
         dropzoneFileList: dropzoneFileList,
-        parsedData: parsedData,
+        parsedData: parsedData, //
       });
     } else {
       message.warning('Please upload a valid code file before continuing.');
@@ -222,7 +224,6 @@ return (
     <div className="header" id="heading">
       <h1>Event Driven Visualization Tool</h1>
     </div>
-    <div className="circle-background"></div>
 
     {/* Dropzone Component */}
     <DropZone 
@@ -230,6 +231,9 @@ return (
       fileArray = {dropzoneFileList}
       fileArraySetter = {setDropzoneFileList}
       onDrop = {handleDropzoneUpload}
+      onFlowchartDataChange={setFlowchartData} // Pass the callback to update flowchart data
+      onPreviewTextChange={setCodePreviewText} // Pass the callback to update
+
     >
       {({
           getRootProps,
