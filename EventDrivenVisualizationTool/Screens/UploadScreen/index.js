@@ -3,6 +3,7 @@ import { Upload, Button, message } from 'antd';
 import { TextInput } from 'react-native-web';
 import { initializeApp } from 'firebase/app';
 import PreviewScreen from '../PreviewScreen';
+import CloudFileSelectionScreen from '../CloudFileSelectionScreen';
 /*import {
   getStorage,
   ref,
@@ -15,6 +16,7 @@ import {
   listFlowcharts,
   uploadParsedCode,
   downloadParsedCode,
+  findFlowcharts,
 } from '../../ApplicationLogic/firebase';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
@@ -41,6 +43,7 @@ export default function UploadScreen() {
   const [cppFiles, setCppFiles] = useState(new Array());
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedCpp, setParsedCpp] = useState(new Array());
+  const [cloudList, setCloudList] = useState(new Array());
  
 
   const [dropzoneFileList, setDropzoneFileList] = useState(new Array());
@@ -56,6 +59,10 @@ export default function UploadScreen() {
       console.log('parsed data in useEffect', parsedData);
     }
   }, [parsedData]);
+
+  const handleCloudFileSelection = () => {
+    navigation.navigate('CloudFileSelectionScreen', {});
+  }
 
   const handleContinue = () => {
     if (flowchartData) {
@@ -308,43 +315,36 @@ return (
     
 
       {/* Code Options and List Code Sections */}
-      <div id="list-code">
+      {/* <div id="list-code">
       <h2>List Flowchart Visualizations Saved on Cloud</h2>
         <Button className="upload-buttons" onClick={() => listFlowcharts()}>
           List Flowcharts
         </Button>
-        </div>
+      </div> */}
 
       {/* Download Code Section */}
       <div id="download-code">
         <h2>Download Flowchart Data</h2>
-        <p>
-          Input name of flowchart to be downloaded.
-        </p>
-        <input
-          value={downloadFlowchartTitle}
-          onChange={(e) => setDownloadFlowchartTitle(e.target.value)}
-        />
         <Button
           className="upload-buttons"
           onClick={() => {
-            if (downloadFlowchartTitle != '') {
-              downloadParsedCode(downloadFlowchartTitle, setFlowchartData);
-            } else {
-              message.error("Please input a name for the flowchart to be downloaded.");
-            }
-            
+            // if (downloadFlowchartTitle != '') {
+            //   downloadParsedCode(downloadFlowchartTitle, setFlowchartData);
+            // } else {
+            //   message.error("Please input a name for the flowchart to be downloaded.");
+            // }
+            handleCloudFileSelection();
           }}
         >
-          Download Flowchart
+          View Flowcharts Saved on Cloud
         </Button>
 
-        <Button 
+        {/* <Button 
         className="upload-buttons"
         onClick={() => {console.log("Preview: " + flowchartData)}}
         >
           Preview Flowchart Data
-        </Button>
+        </Button> */}
       </div>
 
       {/* Save Code Section */}

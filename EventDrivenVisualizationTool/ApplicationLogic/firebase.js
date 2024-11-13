@@ -21,6 +21,30 @@ export const firebaseConfig = {
     appId: "1:743645636910:web:e3ee6cb7bfffbb6899f2bf"
   };
 
+  /**
+   * Retrieve the list of flowcharts stored on the cloud and store the list in a state variable
+   * @param {function} setter Function used to set the list of flowcharts, String[] is inserted.
+   */
+  export function findFlowcharts(setter) {
+    const storage = getStorage();
+    const flowChartRoot = ref(storage, 'Flowcharts');
+    const chartList = new Array();
+    listAll(flowChartRoot)
+    .then((res) => {
+      res.items.forEach((itemRef) => {
+        // All the items under listRef.
+        const flowchartName = itemRef.name.split('.')[0];
+        chartList.push(flowchartName);
+      });
+      console.log("Found Flowcharts: " + chartList);
+      setter(chartList);
+    }).catch((error) => {
+      // Uh-oh, an error occurred!
+      message.error(`An error has occured during list retrieval`);
+      console.log("Error Log: " + error);
+    });
+  }
+
 /**
  * List the names of all flowcharts currently saved on the cloud.
  * The list of flowcharts is printed in the browser console.
@@ -75,20 +99,18 @@ export function uploadParsedCode(uploadFolderTitle, flowchartData) {
     // Handle successful upload
     getDownloadURL(storageRef).then((downloadURL) => {
       console.log('Parsed Code uploaded successfully:', downloadURL);
-      message.success(`Parsed Code "${uploadFolderTitle}" uploaded to cloud storage successfully! Check the browser console for file URL.`);
+      message.success(`Parsed Code "${uploadFolderTitle}" uploaded to cloud storage successfully!`);
     });
   });
 }
 
-// @return {string} A String representation of flowchart data. Flowchart data must be converted back into a
-//  * JSON object using the JSON.parse method prior to use.
-
 /**
  * Retrieve a text file representing flowchart data from the cloud storage and store its text in a String.
  * @param {string} downloadFolderTitle The name of the flowchart data file to search for.
- * @param {function} setter Method used to set the flowchart data state variable
+ * @param {function?} previewSetter Method used to set the flowchart data text preview state variable, String is inserted.
+ * @param {function} dataSetter Method used to set the flowchart data state variable, JSON object is inserted.
  */
-export function downloadParsedCode(downloadFolderTitle, setter) {
+export function downloadParsedCode(downloadFolderTitle, previewSetter, dataSetter) {
   const storage = getStorage();
   const downloadPath = ref(storage, `Flowcharts/${downloadFolderTitle}.txt`);
   console.log(downloadPath);
@@ -98,7 +120,9 @@ export function downloadParsedCode(downloadFolderTitle, setter) {
     xhr.responseType = 'text';
     xhr.onload = (event) => {
       const blob = xhr.response;
-      setter(JSON.parse(blob));
+      previewSetter(blob)
+      dataSetter(JSON.parse(blob));
+      message.success(`Retrieved flowchart data for "${downloadFolderTitle}".`)
     };
     xhr.open('GET', url);
     xhr.send();
