@@ -7,6 +7,7 @@ This tool can automatically convert C and C++ source code files into flowcharts 
 * Added new dropzone uploader. This component can more efficiently support directory uploads containing a large number of files.
 * Added color coding to Flowchart Visualization Nodes.
 * Various UI updates (we have removed the directory cloud functionality, so we can focus on saving flowchart data to the cloud instead of source code files).
+* Added Cloud Support for Listing, Uploading, and Downloading Flowchart Data.
 ### Bug Fixes
 * Upload support for larger code repositories has been improved.
 ### Known Issues
