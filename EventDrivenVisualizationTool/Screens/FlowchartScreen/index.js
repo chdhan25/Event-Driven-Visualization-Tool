@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { Space, Button as AntdButton, message } from 'antd';
 import { View, StyleSheet, Button, Text, TouchableOpacity } from 'react-native';
 import CodeEditor from '../../components/CodeEditor'; // Ensure this is your CodeEditor
 import Visualization from '../Visualization';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
+import { useNavigation } from '@react-navigation/native';
+import { uploadParsedCode } from '../../ApplicationLogic/firebase';
+import visualizationScreenTooltip from '../../components/HelpTooltips/VisualizationScreenTooltip';
 
 const FlowchartScreen = ({ route }) => {
   const { flowchartData: initialFlowchartData, uploadedCode } = route.params;
@@ -13,6 +17,46 @@ const FlowchartScreen = ({ route }) => {
   const [flowchartData, setFlowchartData] = useState(
     initialFlowchartData || {}
   );
+  const [uploadName, setUploadName] = useState('');
+
+  const navigation = useNavigation();
+  useEffect(() => {
+    //Add help button to header
+    navigation.setOptions({
+      headerRight: () => (
+        <Space>
+          <h4>Save Current Flowchart to Cloud</h4>
+          <input
+            value={uploadName}
+            onChange={(e) => setUploadName(e.target.value)}
+            placeholder='Flowchart Name'
+          />
+          <AntdButton
+            onClick={() => {
+              if (flowchartData) {
+                if (uploadName != '') {
+                  const parsed = JSON.stringify(flowchartData);
+                  console.log('Parsed Data:', parsed);
+                  uploadParsedCode(uploadName, parsed);
+                } else {
+                  message.error("Please input a name");
+                }       
+              } else {
+                message.error("Error: No Flowchart Data Found");
+              }
+              
+            }}
+          >
+          Save to Cloud
+          </AntdButton>
+          <AntdButton
+          onClick={() => {visualizationScreenTooltip()}}
+          style={styles.headerButton}
+          >Help</AntdButton>
+        </Space>
+      ),
+    });
+  }, [navigation, uploadName]);
 
   // State to control legend visibility
   const [showLegend, setShowLegend] = useState(false);
@@ -100,6 +144,9 @@ const styles = StyleSheet.create({
     flex: 2,
     padding: 10,
     position: 'relative', // Ensures legend is relative to this container
+  },
+  headerButton: {
+    margin: '10px'
   },
   legendButton: {
     position: 'absolute',

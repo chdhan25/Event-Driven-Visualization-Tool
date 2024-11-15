@@ -25,6 +25,7 @@ import './Upload.css'; // Import the external CSS file
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
 import '../../Screens/UploadScreen/Upload.css';
 import DropZone from '../../components/DropZone';
+import uploadScreenTooltip from '../../components/HelpTooltips/UploadScreenTooltip';
 
 export default function UploadScreen() {
   // State Variables
@@ -50,6 +51,18 @@ export default function UploadScreen() {
 
   const navigation = useNavigation();
   const app = initializeApp(firebaseConfig);
+
+  useEffect(() => {
+    //Add help button to header
+    navigation.setOptions({
+      headerRight: () => (
+        <Button 
+        className='upload-buttons'
+        onClick={() => {uploadScreenTooltip()}}
+        >Help</Button>
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     if (parsedData) {
@@ -328,11 +341,6 @@ return (
         <Button
           className="upload-buttons"
           onClick={() => {
-            // if (downloadFlowchartTitle != '') {
-            //   downloadParsedCode(downloadFlowchartTitle, setFlowchartData);
-            // } else {
-            //   message.error("Please input a name for the flowchart to be downloaded.");
-            // }
             handleCloudFileSelection();
           }}
         >
@@ -348,7 +356,7 @@ return (
       </div>
 
       {/* Save Code Section */}
-      <div id="save-code">
+      {/* <div id="save-code">
         <h2>Save Current Parsed Data to Cloud as a flowchart</h2>
         <p>Input name of flowchart to be saved to cloud</p>
         <input
@@ -375,7 +383,7 @@ return (
         >
           Save Flowchart Data
         </Button>
-      </div>
+      </div> */}
     </div>
     {/* <p>
       Input name of parsed code file to be uploaded to cloud storage here (file

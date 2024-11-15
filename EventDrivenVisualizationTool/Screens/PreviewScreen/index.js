@@ -6,6 +6,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
+import previewScreenTooltip from '../../components/HelpTooltips/PreviewScreenTooltip';
 
 
 const PreviewScreen = (props) => {
@@ -20,6 +21,17 @@ const PreviewScreen = (props) => {
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedData, setParsedData] = useState(null);
 
+  useEffect(() => {
+    //Add help button to header
+    navigation.setOptions({
+      headerRight: () => (
+        <Button 
+        className='upload-buttons'
+        onClick={() => {previewScreenTooltip()}}
+        >Help</Button>
+      ),
+    });
+  }, [navigation]);
     
   useEffect(() => {
     if (parsedData) {

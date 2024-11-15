@@ -29,10 +29,11 @@ const DropZone = (props) => {
     }, [parsedData]);
 
 
-    const {getRootProps, getInputProps} = useDropzone({
+    const {getRootProps, getInputProps, open} = useDropzone({
         accept: {
             'text/plain': [".c", ".cpp"]
         },
+        noClick: true, //Disable the default click behaviour
         onDrop: acceptedFiles => {
             setFileList(acceptedFiles);
             dropMethod(acceptedFiles);
@@ -72,8 +73,10 @@ const DropZone = (props) => {
 
     return (
     <section className = "dropzone">
-    <div className = "dropspace" {...getRootProps()}>
-        <input {...getInputProps()} />
+    <div className = "dropspace" {...getRootProps()} onClick={open}>
+        <input {...getInputProps({
+            webkitdirectory: "true"
+        })} />
         {
             <h3>Drag and drop files here, or click to select files</h3>
         }

@@ -7,6 +7,7 @@ import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchar
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { findFlowcharts, downloadParsedCode } from '../../ApplicationLogic/firebase';
+import cloudFileSelectionScreenTooltip from '../../components/HelpTooltips/CloudFileSelectionScreenTooltip';
 
 
 const CloudFileSelectionScreen = (props) => {
@@ -22,7 +23,17 @@ const CloudFileSelectionScreen = (props) => {
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedData, setParsedData] = useState(null);
 
-
+  useEffect(() => {
+    //Add help button to header
+    navigation.setOptions({
+      headerRight: () => (
+        <Button 
+        className='upload-buttons'
+        onClick={() => {cloudFileSelectionScreenTooltip()}}
+        >Help</Button>
+      ),
+    });
+  }, [navigation]);
 
     const handleContinue = () => {
         if (flowchartData) {
