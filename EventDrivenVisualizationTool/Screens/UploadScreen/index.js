@@ -26,6 +26,7 @@ import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchar
 import '../../Screens/UploadScreen/Upload.css';
 import DropZone from '../../components/DropZone';
 import uploadScreenTooltip from '../../components/HelpTooltips/UploadScreenTooltip';
+import { CloudDownloadOutlined, FileSearchOutlined, ForwardOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 
 export default function UploadScreen() {
   // State Variables
@@ -58,6 +59,7 @@ export default function UploadScreen() {
       headerRight: () => (
         <Button 
         className='upload-buttons'
+        icon={<QuestionCircleTwoTone/>}
         onClick={() => {uploadScreenTooltip()}}
         >Help</Button>
       ),
@@ -340,6 +342,7 @@ return (
         <h2>Download Flowchart Data</h2>
         <Button
           className="upload-buttons"
+          icon={<CloudDownloadOutlined/>}
           onClick={() => {
             handleCloudFileSelection();
           }}
@@ -405,6 +408,8 @@ return (
     </Button> */}
     <Button
       className="continue-button"
+      icon={<ForwardOutlined/>}
+      iconPosition='end'
       type="primary"
       onClick={handleContinue}
       style={{ marginTop: '20px' }}
@@ -413,6 +418,8 @@ return (
     </Button>
     <Button
       className="preview-button"
+      icon={<FileSearchOutlined/>}
+      iconPosition='end'
       type="primary"
       onClick={handlePreview}
       style={{ marginTop: '20px' }}

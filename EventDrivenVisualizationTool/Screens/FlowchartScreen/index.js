@@ -8,6 +8,7 @@ import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchar
 import { useNavigation } from '@react-navigation/native';
 import { uploadParsedCode } from '../../ApplicationLogic/firebase';
 import visualizationScreenTooltip from '../../components/HelpTooltips/VisualizationScreenTooltip';
+import { CloudUploadOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 
 const FlowchartScreen = ({ route }) => {
   const { flowchartData: initialFlowchartData, uploadedCode } = route.params;
@@ -32,6 +33,7 @@ const FlowchartScreen = ({ route }) => {
             placeholder='Flowchart Name'
           />
           <AntdButton
+            icon={<CloudUploadOutlined/>}
             onClick={() => {
               if (flowchartData) {
                 if (uploadName != '') {
@@ -50,6 +52,7 @@ const FlowchartScreen = ({ route }) => {
           Save to Cloud
           </AntdButton>
           <AntdButton
+          icon={<QuestionCircleTwoTone/>}
           onClick={() => {visualizationScreenTooltip()}}
           style={styles.headerButton}
           >Help</AntdButton>

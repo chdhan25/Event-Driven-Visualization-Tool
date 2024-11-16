@@ -7,6 +7,7 @@ import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchar
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import previewScreenTooltip from '../../components/HelpTooltips/PreviewScreenTooltip';
+import { ForwardOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 
 
 const PreviewScreen = (props) => {
@@ -27,6 +28,7 @@ const PreviewScreen = (props) => {
       headerRight: () => (
         <Button 
         className='upload-buttons'
+        icon={<QuestionCircleTwoTone/>}
         onClick={() => {previewScreenTooltip()}}
         >Help</Button>
       ),
@@ -106,7 +108,11 @@ const PreviewScreen = (props) => {
         
     </aside>
 
-    <Button onClick={handleContinue}>Continue</Button>
+    <Button
+    className='upload-buttons'
+    icon={<ForwardOutlined/>}
+    iconPosition='end'
+    onClick={handleContinue}>Continue</Button>
     </section>
     </ScrollView>
    

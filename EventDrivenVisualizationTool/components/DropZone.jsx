@@ -5,6 +5,7 @@ import { TextInput } from 'react-native-web';
 import { generateFlowchartData } from '../ApplicationLogic/flowchart/flowchartUtils';
 import { parseCppCode } from '../ApplicationLogic/parsing/cppParser';
 import { parseCCode } from '../ApplicationLogic/parsing/parser';
+import { FolderAddOutlined } from '@ant-design/icons';
 
 const DropZone = (props) => {
     const [fileList, setFileList] = [props.fileArray, props.fileArraySetter];
@@ -78,7 +79,13 @@ const DropZone = (props) => {
             webkitdirectory: "true"
         })} />
         {
-            <h3>Drag and drop files here, or click to select files</h3>
+            <div>
+                <h3>Drag and drop files here, or click to select files</h3>
+                <FolderAddOutlined 
+                className='large-icon'
+                style={{ fontSize: '60px' }}
+                />
+            </div>
         }
     </div>
     <aside>
