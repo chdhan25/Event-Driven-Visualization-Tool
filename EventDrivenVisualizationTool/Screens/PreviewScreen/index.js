@@ -6,6 +6,8 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
+import previewScreenTooltip from '../../components/HelpTooltips/PreviewScreenTooltip';
+import { ForwardOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 
 
 const PreviewScreen = (props) => {
@@ -20,6 +22,18 @@ const PreviewScreen = (props) => {
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedData, setParsedData] = useState(null);
 
+  useEffect(() => {
+    //Add help button to header
+    navigation.setOptions({
+      headerRight: () => (
+        <Button 
+        className='upload-buttons'
+        icon={<QuestionCircleTwoTone/>}
+        onClick={() => {previewScreenTooltip()}}
+        >Help</Button>
+      ),
+    });
+  }, [navigation]);
     
   useEffect(() => {
     if (parsedData) {
@@ -94,7 +108,11 @@ const PreviewScreen = (props) => {
         
     </aside>
 
-    <Button onClick={handleContinue}>Continue</Button>
+    <Button
+    className='upload-buttons'
+    icon={<ForwardOutlined/>}
+    iconPosition='end'
+    onClick={handleContinue}>Continue</Button>
     </section>
     </ScrollView>
    

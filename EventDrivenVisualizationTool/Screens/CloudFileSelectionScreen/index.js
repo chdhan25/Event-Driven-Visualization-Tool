@@ -7,6 +7,8 @@ import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchar
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { findFlowcharts, downloadParsedCode } from '../../ApplicationLogic/firebase';
+import cloudFileSelectionScreenTooltip from '../../components/HelpTooltips/CloudFileSelectionScreenTooltip';
+import { CloudSyncOutlined, ForwardOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 
 
 const CloudFileSelectionScreen = (props) => {
@@ -22,7 +24,18 @@ const CloudFileSelectionScreen = (props) => {
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedData, setParsedData] = useState(null);
 
-
+  useEffect(() => {
+    //Add help button to header
+    navigation.setOptions({
+      headerRight: () => (
+        <Button 
+        className='upload-buttons'
+        icon={<QuestionCircleTwoTone/>}
+        onClick={() => {cloudFileSelectionScreenTooltip()}}
+        >Help</Button>
+      ),
+    });
+  }, [navigation]);
 
     const handleContinue = () => {
         if (flowchartData) {
@@ -55,7 +68,12 @@ const CloudFileSelectionScreen = (props) => {
     <section className = "dropzone">
     <aside>
         <h4>Flowcharts (Click on a Flowcharts's Listing to load its contents)</h4>
-        <Button onClick={() => {findFlowcharts(setFlowchartList);}}>Retrieve Flowcharts from Cloud</Button>
+        <Button 
+        icon={<CloudSyncOutlined/>}
+        onClick={() => {findFlowcharts(setFlowchartList);}}
+        >
+          Retrieve Flowcharts from Cloud
+        </Button>
         <ul>{flowchartPreviewList}</ul>
         <div className='previewPane'>
         <TextInput
@@ -68,7 +86,11 @@ const CloudFileSelectionScreen = (props) => {
         
     </aside>
 
-    <Button onClick={handleContinue}>Continue</Button>
+    <Button 
+    className='upload-buttons'
+    icon={<ForwardOutlined/>}
+    iconPosition='end'
+    onClick={handleContinue}>Continue</Button>
     </section>
     </ScrollView>
    

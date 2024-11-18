@@ -47,6 +47,10 @@
   font-size: 16px; /* Ensure text is readable */
 }
 
+.warning-text {
+  color: red;
+}
+
 /* Additional styling for the Upload section */
 
 
