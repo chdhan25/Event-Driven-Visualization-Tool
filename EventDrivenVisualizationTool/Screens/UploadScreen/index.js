@@ -407,7 +407,8 @@ return (
       Reparse Current Code and Upload Parsed Code to Cloud
     </Button> */}
     <Button
-      className="continue-button"
+      // className="continue-button"
+      className={flowchartData ? "enabled-button" : "disabled-button"}
       icon={<ForwardOutlined/>}
       iconPosition='end'
       type="primary"
@@ -417,12 +418,11 @@ return (
       Continue
     </Button>
     <Button
-      className="preview-button"
+      className={flowchartData ? "enabled-button" : "disabled-button"}
       icon={<FileSearchOutlined/>}
       iconPosition='end'
       type="primary"
       onClick={handlePreview}
-      style={{ marginTop: '20px' }}
     >
       Preview Repository
     </Button>

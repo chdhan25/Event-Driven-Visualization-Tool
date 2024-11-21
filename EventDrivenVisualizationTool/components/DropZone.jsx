@@ -47,6 +47,7 @@ const DropZone = (props) => {
     const previewList = fileList.map(file => (
         <li key={file.path}>
         <Button
+        className='preview-item'
         onClick={() => {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -83,16 +84,14 @@ const DropZone = (props) => {
                 <h3>Drag and drop files here, or click to select files</h3>
                 <FolderAddOutlined 
                 className='large-icon'
-                style={{ fontSize: '60px' }}
                 />
             </div>
         }
     </div>
-    <aside>
-        <ul>{previewList}</ul>
-        
-    </aside>
 
+    <div className='fileList'>
+        <ul>{previewList}</ul>
+    </div>
     </section>
     );
 };

@@ -54,6 +54,7 @@ const CloudFileSelectionScreen = (props) => {
     const flowchartPreviewList = flowchartList.map(flowchart => (
         <li key={flowchart}>
         <Button
+        className='preview-item'
         onClick={() => {
             downloadParsedCode(flowchart, setFlowchartPreviewText, setFlowchartData);
         }}
@@ -74,7 +75,7 @@ const CloudFileSelectionScreen = (props) => {
         >
           Retrieve Flowcharts from Cloud
         </Button>
-        <ul>{flowchartPreviewList}</ul>
+        <ul className='cloudFileList'>{flowchartPreviewList}</ul>
         <div className='previewPane'>
         <TextInput
         value={flowchartPreviewText}
@@ -87,9 +88,10 @@ const CloudFileSelectionScreen = (props) => {
     </aside>
 
     <Button 
-    className='upload-buttons'
+    className={flowchartData ? "enabled-button" : "disabled-button"}
     icon={<ForwardOutlined/>}
     iconPosition='end'
+    type='primary'
     onClick={handleContinue}>Continue</Button>
     </section>
     </ScrollView>

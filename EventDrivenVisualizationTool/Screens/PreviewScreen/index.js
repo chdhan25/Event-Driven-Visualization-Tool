@@ -64,6 +64,7 @@ const PreviewScreen = (props) => {
     const previewList = dropzoneFileList.map(file => (
         <li key={file.path}>
         <Button
+        className='preview-item'
         onClick={() => {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -91,11 +92,10 @@ const PreviewScreen = (props) => {
       ));
 
     return (
-      <ScrollView>
     <section className = "dropzone">
     <aside>
         <h4>Files (Click on a File's Listing to Preview its text)</h4>
-        <ul>{previewList}</ul>
+        <ul className='fileList'>{previewList}</ul>
         <div className='previewPane'>
         <TextInput
         // style={{width: '95%'}}
@@ -112,9 +112,9 @@ const PreviewScreen = (props) => {
     className='upload-buttons'
     icon={<ForwardOutlined/>}
     iconPosition='end'
+    type='primary'
     onClick={handleContinue}>Continue</Button>
     </section>
-    </ScrollView>
    
     );
 };

@@ -36,8 +36,9 @@ export const firebaseConfig = {
         const flowchartName = itemRef.name.split('.')[0];
         chartList.push(flowchartName);
       });
-      console.log("Found Flowcharts: " + chartList);
+      //console.log("Found Flowcharts: " + chartList);
       setter(chartList);
+      message.info(`Flowcharts Retrieved`);
     }).catch((error) => {
       // Uh-oh, an error occurred!
       message.error(`An error has occured during list retrieval`);
