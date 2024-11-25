@@ -6,7 +6,7 @@ import Visualization from '../Visualization';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
 import { useNavigation } from '@react-navigation/native';
-import { uploadParsedCode } from '../../ApplicationLogic/firebase';
+import { uploadParsedCode, checkSaveFlowchartOK } from '../../ApplicationLogic/firebase';
 import visualizationScreenTooltip from '../../components/HelpTooltips/VisualizationScreenTooltip';
 import { CloudUploadOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 
@@ -39,7 +39,7 @@ const FlowchartScreen = ({ route }) => {
                 if (uploadName != '') {
                   const parsed = JSON.stringify(flowchartData);
                   console.log('Parsed Data:', parsed);
-                  uploadParsedCode(uploadName, parsed);
+                  checkSaveFlowchartOK(uploadName, parsed);
                 } else {
                   message.error("Please input a name");
                 }       

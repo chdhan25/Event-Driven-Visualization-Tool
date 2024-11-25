@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { Button, message } from 'antd'
+import { Button, message, Modal } from 'antd'
 import { ScrollView, TextInput } from 'react-native-web';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
-import { findFlowcharts, downloadParsedCode } from '../../ApplicationLogic/firebase';
+import { findFlowcharts, downloadParsedCode, retrieveVersionList, downloadVersionFlowchart } from '../../ApplicationLogic/firebase';
 import cloudFileSelectionScreenTooltip from '../../components/HelpTooltips/CloudFileSelectionScreenTooltip';
 import { CloudSyncOutlined, ForwardOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 
@@ -23,6 +23,9 @@ const CloudFileSelectionScreen = (props) => {
   const [parsedCpp, setParsedCpp] = useState(new Array());
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedData, setParsedData] = useState(null);
+  const [isVersionListOpen, setIsVersionListOpen] = useState(false);
+  const [versionList, setVersionList] = useState(new Array());
+  const [currentFlowchart, setCurrentFlowchart] = useState('');
 
   useEffect(() => {
     //Add help button to header
@@ -56,7 +59,11 @@ const CloudFileSelectionScreen = (props) => {
         <Button
         className='preview-item'
         onClick={() => {
-            downloadParsedCode(flowchart, setFlowchartPreviewText, setFlowchartData);
+            //downloadParsedCode(flowchart, setFlowchartPreviewText, setFlowchartData);
+            retrieveVersionList(flowchart, setVersionList);
+            setCurrentFlowchart(flowchart);
+            setIsVersionListOpen(true);
+            //console.log('Retrieved:', versionList);
         }}
         >
             {flowchart}
@@ -64,9 +71,34 @@ const CloudFileSelectionScreen = (props) => {
         </li>
       ));
 
+      const flowchartVersionList = versionList.map(version => (
+        <li key={version}>
+          <Button
+          className='preview-item'
+          onClick={() => {
+            //console.log("Original: ", currentFlowchart);
+            //console.log("Got:", version);
+            downloadVersionFlowchart(currentFlowchart, version, setFlowchartPreviewText, setFlowchartData);
+            setIsVersionListOpen(false);
+          }}
+          >
+            {version}
+          </Button>
+        </li>
+      ))
+
     return (
       <ScrollView>
     <section className = "dropzone">
+    {/* Version List Modal */}
+    <Modal
+      title={`${currentFlowchart} Version List`}
+      onCancel={() => {setIsVersionListOpen(false)}}
+      open={isVersionListOpen}
+      footer={null}
+    >
+      <ul className='cloudFileList'>{flowchartVersionList}</ul>
+    </Modal>
     <aside>
         <h4>Flowcharts (Click on a Flowcharts's Listing to load its contents)</h4>
         <Button 
