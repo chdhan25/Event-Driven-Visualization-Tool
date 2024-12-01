@@ -43,9 +43,13 @@ const CloudFileSelectionScreen = (props) => {
     const handleContinue = () => {
         if (flowchartData) {
             console.log(flowchartData);
-            navigation.navigate('VisualizationSelector', {
-                flowchartData: flowchartData,
-                uploadedCode: '',
+            // navigation.navigate('VisualizationSelector', {
+            //     flowchartData: flowchartData,
+            //     uploadedCode: '',
+            // });
+            navigation.navigate('FlowchartScreen', {
+              flowchartData: flowchartData,
+              uploadedCode: ''
             });
         } else {
         message.warning('Please select a flowchart before continuing.');

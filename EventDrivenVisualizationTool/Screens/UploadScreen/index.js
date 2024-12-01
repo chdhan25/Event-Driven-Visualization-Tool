@@ -82,9 +82,13 @@ export default function UploadScreen() {
   const handleContinue = () => {
     if (flowchartData) {
       console.log("This is uploaded code"+ uploadedCode)
-      navigation.navigate('VisualizationSelector', {
+      // navigation.navigate('VisualizationSelector', {
+      //   flowchartData: flowchartData,
+      //   uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
+      // });
+      navigation.navigate('FlowchartScreen', {
         flowchartData: flowchartData,
-        uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
+        uploadedCode: uploadedCode
       });
     } else {
       message.warning('Please upload a valid code file or download a valid flowchart before continuing.');
