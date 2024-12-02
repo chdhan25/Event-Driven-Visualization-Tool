@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
-import {message} from 'antd';
+import React from 'react'
+import {message, Modal, Button, Space} from 'antd';
 import 'firebase/storage';
 import {
   getStorage,
@@ -8,6 +9,7 @@ import {
   getDownloadURL,
   listAll,
   getBytes,
+  deleteObject
 } from 'firebase/storage';
 //import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
@@ -22,22 +24,264 @@ export const firebaseConfig = {
   };
 
   /**
+   * Check if a flowchart with a given name exists on the cloud.
+   * If not, then proceed to create a folder on the cloud to save future flowchart versions 
+   * before saving the current flowchart as the first version.
+   * If so, then prompt the user with the choice to either save the current flowchart as a new version
+   * of an existing flowchart, or overwrite the flowchart saved on the cloud before proceeding to save
+   * the current flowchart as the first version.
+   * @param {String} flowchartName The name the flowchart will be saved under.
+   * @param {String} flowchartData A String representation of the flowchart data.
+   * Flowchart data must first be converted from a JSON Object to a String representation
+   * using the JSON.Stringify method.
+   */
+  export function checkSaveFlowchartOK(flowchartName, flowchartData) {
+    if (flowchartData == null) {
+      message.error("No Flowchart Data Provided");
+    } else if (flowchartName == null || flowchartName == '') {
+      message.error("No Flowchart Name Provided");
+    } else {
+      const storage = getStorage();
+      const flowchartPath = ref(storage, `VersionFlowcharts/${flowchartName}`);
+      // Check if directory exists
+      const files = new Array();
+      listAll(flowchartPath)
+      .then((res) => {
+        // Flowchart with provided name exists on the cloud, give prompt to save new version or overwrite
+        
+        res.items.forEach((itemRef) => {
+          // All the items under listRef.
+          files.push(itemRef);
+        });
+        if (files.length > 0) {
+          // Directory Exists, give the overwrite warning prompt
+          overwriteWarning(flowchartName, flowchartData);
+        } else {
+          // Directory does not exist, proceed to save current flowchart as the first version
+          saveVersionFlowchart(flowchartName, flowchartData);
+        }
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+        console.log('Cloud Check Error', error);
+        message.error("Cloud Check Error");
+        
+      });
+
+    }
+  }
+
+  /**
+   * Upload and save the current flowchart to the cloud. To allow for version control, all
+   * flowcharts saved under the same name will be stored in the same folder, with each version
+   * being appended a time marker to differentiate them. The flowchart will be given a time marker
+   * corresponding to the current date-time in UTC.
+   * @param {String} flowchartName The name the flowchart will be saved under.
+   * @param {String} flowchartData A String representation of the flowchart data.
+   * Flowchart data must first be converted from a JSON Object to a String representation
+   * using the JSON.Stringify method.
+   */
+  export function saveVersionFlowchart(flowchartName, flowchartData) {
+    if (flowchartData == null) {
+      message.error("No Flowchart Data Provided");
+    } else if (flowchartName == null || flowchartName == '') {
+      message.error("No Flowchart Name Provided");
+    } else {
+      const storage = getStorage();
+      const currentDateTime = new Date().toISOString(); // Get a String representation of the current date-time
+      /* Create an upload path containing the provided flowchart name as the name of the folder, 
+      and the time marker as the file name */
+      const flowchartPath = ref(storage, `VersionFlowcharts/${flowchartName}/${currentDateTime}.txt`);
+      const stringData = flowchartData;
+      const blob = new Blob([stringData], { type: 'Text Document' }); // Create a Blob from the String
+
+      const uploadTask = uploadBytesResumable(flowchartPath, blob);
+
+      uploadTask.on('state_changed', (snapshot) => {
+        // Handle upload progress
+      }, (error) => {
+        // Handle upload errors
+        console.log('Save Error', error);
+      }, () => {
+        // Handle successful upload
+        getDownloadURL(flowchartPath).then((downloadURL) => {
+          console.log(`Flowchart "${flowchartName}" version "${currentDateTime}" 
+            uploaded to cloud storage successfully!`, downloadURL);
+          message.success(`Flowchart "${flowchartName}" version "${currentDateTime}" 
+            uploaded to cloud storage successfully!`);
+        });
+      });
+    }
+  }
+
+  /**
+   * Display a prompt giving users the option to save a new version of an existing flowchart,
+   * or delete the flowchart from the cloud before saving the current flowchart data as the first
+   * version of a new flowchart.
+   * @param {String} flowName The name the flowchart will be saved under.
+   * @param {String} flowData A String representation of the flowchart data.
+   * Flowchart data must first be converted from a JSON Object to a String representation
+   * using the JSON.Stringify method.
+   */
+  export const overwriteWarning = (flowName, flowData) => {
+    Modal.confirm({
+      title: `Overwrite or save new version of ${flowName}?`,
+      content: (
+        <div>
+          <p>Flowchart "{flowName}" already exists on the cloud, would you like to save this flowchart as a new version of
+            "{flowName}", or would you like to delete "{flowName}" on the cloud before saving the current flowchart?
+          </p>
+
+          <p style={{color: 'red'}}><b>Choosing to overwrite "{flowName}" will delete all of its versions
+            from the cloud. This cannot be undone.
+          </b></p>
+        </div>
+      ),
+      footer: (
+        <Space>
+          <Button key='cancel' onClick={() => Modal.destroyAll()}>Cancel</Button>,
+          <Button key='saveNewVersion' type='primary' 
+          onClick={() => saveVersionFlowchart(flowName, flowData)}>
+            Save New Version</Button>,
+          <Button key='overwrite' type='primary' 
+          onClick={() => overwriteFlowchart(flowName, flowData)}>
+            Overwrite Flowchart and Save</Button>
+        </Space>
+      ),
+      width: 500
+    });
+  }
+
+  export function overwriteFlowchart(flowchartName, flowData) {
+    if (flowData == null) {
+      message.error("No Flowchart Data Provided");
+    } else if (flowchartName == null || flowchartName == '') {
+      message.error("No Flowchart Name Provided");
+    } 
+    const storage = getStorage();
+    const flowchartPath = ref(storage, `VersionFlowcharts/${flowchartName}`);
+    // Delete the Directory
+    listAll(flowchartPath)
+    .then((res) => {
+      res.items.forEach((itemRef) => {
+        // All the items under listRef.
+        console.log("Preparing to Delete: ", itemRef);
+        deleteObject(itemRef);
+      });
+      saveVersionFlowchart(flowchartName, flowData);
+    }).catch((error) => {
+      // Uh-oh, an error occurred!
+      console.log("Overwrite Error", error);
+    });
+  }
+
+  /**
+   * Download a specified version of a specified flowchart from the cloud.
+   * @param {String} downloadFlowchartTitle The name of the flowchart to look up.
+   * @param {String} downloadVersion The version of the flowchart to be retrieved.
+   * @param {function} previewSetter Setter function to set a state variable containing
+   * preview text. A String is inserted.
+   * @param {function} dataSetter Setter function to set a state variable containing
+   * flowchart data. A JSON object is inserted.
+   */
+  export function downloadVersionFlowchart(downloadFlowchartTitle, downloadVersion, previewSetter, dataSetter) {
+    if (downloadFlowchartTitle == null || downloadFlowchartTitle == '') {
+      message.error("No Flowchart Name Provided");
+    } else if (downloadVersion == null || downloadVersion == '') {
+      message.error("No Flowchart Version Provided");
+    } else {
+      const storage = getStorage();
+      const downloadPath = ref(storage, `VersionFlowcharts/${downloadFlowchartTitle}/${downloadVersion}`);
+      console.log(downloadPath);
+      getDownloadURL(downloadPath)
+      .then((url) => {
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'text';
+        xhr.onload = (event) => {
+          const blob = xhr.response;
+          previewSetter(blob)
+          dataSetter(JSON.parse(blob));
+          message.success(`Retrieved flowchart data for 
+            "${downloadFlowchartTitle}" at version "${downloadVersion}".`)
+        };
+        xhr.open('GET', url);
+        xhr.send();
+      })
+      .catch((error) => {
+        // Handle any errors
+        switch (error.code) {
+          case 'storage/object-not-found':
+            message.error("File not found");
+            // File doesn't exist
+            break;
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            message.error("You do not have authorization to download this file");
+            break;
+          case 'storage/canceled':
+            // User canceled the upload
+            message.error("Download cancelled");
+            break;
+
+          // ...
+
+          case 'storage/unknown':
+            // Unknown error occurred, inspect the server response
+            message.error("Unknown error occured");
+            break;
+      }});
+    }
+  }
+
+  /**
+   * Create a list of all available versions of a given flowchart, and store it in a state variable
+   * @param {String} flowchartName The name of the flowchart to look up.
+   * @param {function} setter A function that can be used to set the value of the state variable.
+   * A String array will be inserted into the state variable.
+   */
+  export function retrieveVersionList(flowchartName, setter) {
+    if (flowchartName == null || flowchartName == '') {
+      message.error("No Flowchart Name Provided");
+    } else {
+      const storage = getStorage();
+      const flowchartPath = ref(storage, `VersionFlowcharts/${flowchartName}`);
+      const versionList = new Array();
+      listAll(flowchartPath)
+      .then((res) => {
+        res.items.forEach((itemRef) => {
+          // All the items under listRef.
+          console.log("Version: " + itemRef);
+          versionList.push(itemRef.name);
+        });
+        //const latestVersion = versionList.pop();
+        //versionList.push(`${latestVersion} (Latest Version)`) // Mark the latest version of the flowchart
+        console.log('Version List:', versionList);
+        setter(versionList);
+      }).catch((error) => {
+        // Uh-oh, an error occurred!
+        message.error("List Versions Error");
+      });
+    }
+  }
+
+  /**
    * Retrieve the list of flowcharts stored on the cloud and store the list in a state variable
    * @param {function} setter Function used to set the list of flowcharts, String[] is inserted.
    */
   export function findFlowcharts(setter) {
     const storage = getStorage();
-    const flowChartRoot = ref(storage, 'Flowcharts');
+    const flowChartRoot = ref(storage, 'VersionFlowcharts');
     const chartList = new Array();
     listAll(flowChartRoot)
     .then((res) => {
-      res.items.forEach((itemRef) => {
-        // All the items under listRef.
-        const flowchartName = itemRef.name.split('.')[0];
+      res.prefixes.forEach((folderRef) => {
+        // All the folders under listRef.
+        const flowchartName = folderRef.name.split('.')[0];
         chartList.push(flowchartName);
       });
-      console.log("Found Flowcharts: " + chartList);
+      //console.log("Found Flowcharts: " + chartList);
       setter(chartList);
+      message.info(`Flowcharts Retrieved`);
     }).catch((error) => {
       // Uh-oh, an error occurred!
       message.error(`An error has occured during list retrieval`);
@@ -72,6 +316,8 @@ export function listFlowcharts() {
   });
 }
 
+/* Deprecated Methods Below */
+
 /**
  * Upload a String containing flowchart data to the cloud as a '.txt' file.
  * After a successful upload, a pop-up will confirm that the upload was completed, and a link to view the
@@ -81,6 +327,7 @@ export function listFlowcharts() {
  * @param {string} flowchartData A String containing all of the text of the flowchart data.
  * Flowchart data object must be converted to a String using the JSON.stringify method before being 
  * passed to this function as an argument
+ * @Deprecated
  */
 export function uploadParsedCode(uploadFolderTitle, flowchartData) {
   const storage = getStorage();
@@ -109,6 +356,7 @@ export function uploadParsedCode(uploadFolderTitle, flowchartData) {
  * @param {string} downloadFolderTitle The name of the flowchart data file to search for.
  * @param {function?} previewSetter Method used to set the flowchart data text preview state variable, String is inserted.
  * @param {function} dataSetter Method used to set the flowchart data state variable, JSON object is inserted.
+ * @Deprecated
  */
 export function downloadParsedCode(downloadFolderTitle, previewSetter, dataSetter) {
   const storage = getStorage();
@@ -186,11 +434,10 @@ export function downloadParsedCode(downloadFolderTitle, previewSetter, dataSette
   //   }});
 }
 
-// Old Methods Below
-
   /**
    * List the names of all C Source Code Files currently saved on the cloud.
    * The list of files is printed in the browser console.
+   * @Deprecated
    */
 export function listCSourceCodeFiles() {
   const storage = getStorage();
@@ -213,6 +460,7 @@ export function listCSourceCodeFiles() {
   /**
    * List the names of all C++ Source Code Files currently saved on the cloud.
    * The list of files is printed in the browser console.
+   * @Deprecated
    */
 export function listCPlusPlusSourceCodeFiles() {
   const storage = getStorage();
@@ -240,6 +488,7 @@ export function listCPlusPlusSourceCodeFiles() {
 
 /**
  * List the name of all directories stored on the cloud.
+ * @Deprecated
  */
 export function listDirectories() {
   const storage = getStorage();
@@ -265,6 +514,7 @@ export function listDirectories() {
    * file saved on the cloud is printed in the browser console.
    * @param {string} uploadTitle The name the '.c' file will be saved under in the cloud.
    * @param {string} codeText A String containing all of the text of the C Source Code file.
+   * @Deprecated
    */
 export function uploadCSourceCodeFile(uploadTitle, codeText) {
   const storage = getStorage();
@@ -294,6 +544,7 @@ export function uploadCSourceCodeFile(uploadTitle, codeText) {
    * file saved on the cloud is printed in the browser console.
    * @param {string} uploadTitle The name the '.cpp' file will be saved under in the cloud.
    * @param {string} codeText A String containing all of the text of the C++ source code file.
+   * @Deprecated
    */
 export function uploadCPlusPlusSourceCodeFile(uploadTitle, codeText) {
   const storage = getStorage();
@@ -321,6 +572,7 @@ export function uploadCPlusPlusSourceCodeFile(uploadTitle, codeText) {
  * Upload a directory to the cloud.
  * @param {string} directoryTitle The name that the directory will be saved under in the cloud.
  * @param {File[]} fileArray An array of source code files to be uploaded to the cloud.
+ * @Deprecated
  */
 export function uploadDirectory(directoryTitle, fileArray) {
   if (fileArray.length < 1) {
@@ -369,7 +621,8 @@ export function uploadDirectory(directoryTitle, fileArray) {
 /**
  * Retrieve a C source code file from the cloud storage and store its text in a String.
  * @param {string} downloadFileTitle The name of the source code file to search for.
- * @param {string} reply 
+ * @param {string} reply
+ * @Deprecated
  */
 export function downloadCSourceCodeFile(downloadFileTitle, reply) {
   const storage = getStorage();
@@ -422,7 +675,8 @@ export function downloadCSourceCodeFile(downloadFileTitle, reply) {
 /**
  * Retrieve a C++ source code file from the cloud storage and store its text in a String.
  * @param {string} downloadFileTitle The name of the source code file to search for.
- * @param {string} reply 
+ * @param {string} reply
+ * @Deprecated
  */
 export function downloadCPlusPlusSourceCodeFile(downloadFileTitle, reply) {
   const storage = getStorage();
@@ -476,6 +730,7 @@ export function downloadCPlusPlusSourceCodeFile(downloadFileTitle, reply) {
  * Downloads the files from a given directory, and adds them to a given file array.
  * @param {string} directoryTitle The name of the directory to retrieve files from.
  * @param {File[]} downloadTarget The array to append the retrieved files to.
+ * @Deprecated
  */
 export function downloadDirectory(directoryTitle, downloadTarget) {
   const storage = getStorage();

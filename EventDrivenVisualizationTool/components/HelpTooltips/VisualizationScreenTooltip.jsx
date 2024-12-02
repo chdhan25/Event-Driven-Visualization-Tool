@@ -61,13 +61,18 @@ const visualizationScreenTooltip = () => {
             <li>After inputting a name, click the "Save to Cloud" button to save the current flowchart
               to the cloud.
             </li>
+            <li>If you save a flowchart under a name that is currently being used
+            to store one or more flowchart versions saved on the cloud, then you will be given a prompt informing you that
+            the name is in use. From this prompt, you can choose to cancel the save operation, to save the current
+            flowchart as a new version without affecting pre-existing versions, or deleting all existing versions
+            before proceeding to save the current flowchart as the first version of
+            a new cloud flowchart.</li>
             <li>To access a saved flowchart, refresh the app to go back to the upload screen.
               From there, click on the "View Flowcharts Saved on Cloud" button towards the bottom of the page,
               and follow the instructions listed under the help tooltip of the Cloud File Selection screen.
             </li>
            </ol>
-           <h3 className='warning-text'>Warning: If you save a flowchart under a name that is currently being used
-            by another flowchart saved on the cloud, then the old flowchart will be overwritten.
+           <h3 className='warning-text'>Warning: Overwritten flowchart versions cannot be recovered.
            </h3>
           </div>
         ),

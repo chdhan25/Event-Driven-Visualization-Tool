@@ -18,7 +18,12 @@ const cloudFileSelectionScreenTooltip = () => {
 
             <h2>Download the Data for a Saved Flowchart</h2>
             <ol>
-              <li>Click on a listing for a flowchart to download its associated data.</li>
+              <li>Click on a listing for a flowchart to open its version list.</li>
+              <li>The version list contains all of the current versions of the flowchart saved on the cloud.</li>
+              <li>Each version is marked using a String that contains the date and time down to the millesecond
+                when the flowchart was saved in UTC time. Click on a version listing to download its data
+                from the cloud.
+              </li>
               <li>After a successful download, a String representation of the selected flowchart's
                 data will appear in the preview pane below the listings.
               </li>

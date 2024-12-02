@@ -82,9 +82,13 @@ export default function UploadScreen() {
   const handleContinue = () => {
     if (flowchartData) {
       console.log("This is uploaded code"+ uploadedCode)
-      navigation.navigate('VisualizationSelector', {
+      // navigation.navigate('VisualizationSelector', {
+      //   flowchartData: flowchartData,
+      //   uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
+      // });
+      navigation.navigate('FlowchartScreen', {
         flowchartData: flowchartData,
-        uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
+        uploadedCode: uploadedCode
       });
     } else {
       message.warning('Please upload a valid code file or download a valid flowchart before continuing.');
@@ -407,7 +411,8 @@ return (
       Reparse Current Code and Upload Parsed Code to Cloud
     </Button> */}
     <Button
-      className="continue-button"
+      // className="continue-button"
+      className={flowchartData ? "enabled-button" : "disabled-button"}
       icon={<ForwardOutlined/>}
       iconPosition='end'
       type="primary"
@@ -417,12 +422,11 @@ return (
       Continue
     </Button>
     <Button
-      className="preview-button"
+      className={flowchartData ? "enabled-button" : "disabled-button"}
       icon={<FileSearchOutlined/>}
       iconPosition='end'
       type="primary"
       onClick={handlePreview}
-      style={{ marginTop: '20px' }}
     >
       Preview Repository
     </Button>
