@@ -2,6 +2,27 @@
 This tool can automatically convert C and C++ source code files into flowcharts that support editing, cloud storage, and version control. The purpose of these flowcharts is to provide a high-level view of code files to help new hires gain an understanding of legacy code files.
 
 # Release Notes
+
+### All Features
+* Repository and Upload Ability
+* Code Previewing Page
+* Event Driven Visualization
+* Save Visualization to Firebase
+* Retreive Visualization from Firebase
+
+### Known Issues
+*
+*
+*
+
+### Bugs that have occured throughout
+*
+*
+*
+
+## Installation Guide
+
+
 ## Version 0.4.0
 ### New Features
 * Added new dropzone uploader. This component can more efficiently support directory uploads containing a large number of files.
