@@ -63,6 +63,7 @@ const DropZone = (props) => {
                 }               
                 setPreviewTitle(file.name);
                 setPreviewText(fileText);
+                message.info(`${file.name} is selected`)
                 onPreviewTextChange(fileText); // Pass the file text to the parent component
             }
             reader.readAsText(file);
