@@ -24,10 +24,10 @@ const FlowchartScreen = ({ route }) => {
   useEffect(() => {
     //Add help button to header
     navigation.setOptions({
-      headerTitle: "Event Driven Visualization Tool",
+    
       headerRight: () => (
         <Space>
-          <h4>Save Flowchart</h4>
+          <h4>Save Flowchart </h4>
           <input
             value={uploadName}
             onChange={(e) => setUploadName(e.target.value)}
