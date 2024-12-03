@@ -81,7 +81,7 @@ const DropZone = (props) => {
         })} />
         {
             <div>
-                <h3>Drag and drop files here, or click to select files</h3>
+                <h3>Drag & Drop Files Here, Or Click To Select Files</h3>
                 <FolderAddOutlined 
                 className='large-icon'
                 />
