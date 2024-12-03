@@ -5,7 +5,7 @@ export const VisualizationSelectionScreenStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#9FCCE4",
+        backgroundColor: "white",
         padding: 10,
     },
     title: {

@@ -27,11 +27,14 @@
 .header h1 {
   color: black; /* Make the text inside the header white */
   margin: 0;
+  position:relative;
+  z-index: 3;
 }
 
 /* Upload buttons */
 .upload-buttons {
   margin: 10px;
+  font-size: 16px;
 }
 
 /* Code Preview TextInput style */
@@ -43,6 +46,14 @@
   margin: 20px 0;
   padding-top: 30px;
   font-size: 16px; /* Ensure text is readable */
+}
+
+.warning-text {
+  color: red;
+}
+
+.large-icon {
+  font-size: 60px;
 }
 
 /* Additional styling for the Upload section */
@@ -58,6 +69,17 @@
   font-size: 16px; /* Adjust font size as needed */
 }
 
+.disabled-button {
+  margin-top: 20px;
+  background-color: #9fcce4;
+  font-size: 16px;
+}
+
+.enabled-button {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
 input {
   margin: 5px;
 }
@@ -66,6 +88,7 @@ input {
 #code-options,
 #list-code {
   display: flex;
+  background-color: white;
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
@@ -74,11 +97,13 @@ input {
   padding: 20px;
   margin: 10px;
   text-align: center;
+  z-index: 2;
 }
 
 #download-code,
 #save-code {
   flex: 1; /* Allow them to take up equal space */
+  background-color: white;
   margin: 10px; /* Add margin for spacing between them */
   flex-direction: column;
   align-items: center; /* Center elements horizontally */
@@ -88,6 +113,7 @@ input {
   border-radius: 10px;
   padding: 20px;
   margin: 10px;
+  z-index: 2;
 }
 
 #download-code button,
@@ -126,9 +152,9 @@ p {
   margin: 0 0 10px 0; /* Add spacing below the paragraph if needed */
 }
 
-.dropzone {
+/* .dropzone-container {
   width: 80%;
-  /* border: 2px solid black; */
+  border: 2px solid black;
   display: 'flex';
   flex-direction: 'row';
   flex-wrap: 'wrap';
@@ -136,7 +162,7 @@ p {
   text-align: 'center';
   justify-content: 'center';
   height: 60%;
-}
+} */
 
 .dropspace {
   background-color: rgb(201, 201, 201);
@@ -146,7 +172,8 @@ p {
   align-items: center;
   
   opacity: 60%;
-  height:20%
+  height:20%;
+  min-height: 150px;
 }
 
 
@@ -168,18 +195,24 @@ p {
   max-width: 100%;
   margin: 20px auto;          /* Centering with margin */
   width: 80%;
-  height:100%
-  
+  height:100%;
+  min-height: 500px;
+  position: relative;
+  z-index: 2;
 }
 
 .dropzone:hover {
   border: 2px dashed #4a90e2;
+  position: relative;
+  z-index: 2;
 }
 
 .dropzone p {
   font-size: 1rem;          /* Sets font size for any instructions */
   color: #555;              /* Light gray text color */
-  margin: 0;                /* Removes default margin */
+  margin: 0;
+  position: relative;
+  z-index: 2;            /* Removes default margin */
 }
 
 .dropzone.active {
@@ -187,18 +220,49 @@ p {
   border-color: #005bb5;     /* Changes border color on drag */
 }
 
+.fileList {
+  align-items: left;
+  padding-top: 10px;
+  margin-top: 10px;
+  height: 350px;
+  justify-content: left;
+  border: solid black 1px;
+  overflow: scroll;
+}
 
+.cloudFileList {
+  align-items: left;
+  padding-top: 10px;
+  margin-top: 10px;
+  height: 350px;
+  justify-content: left;
+  border: solid red 1px;
+  overflow: scroll;
+}
 
 /* Individual preview item */
 .preview-item {
-  width: 80px;
-  height: 80px;
+  /* width: 80px;
+  height: 80px; */
   position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: left;
+  align-items: left;
   border: 1px solid #ddd;
   border-radius: 4px;
   overflow: hidden;
   background: #fafafa;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  bottom: 300px; /* Adjust so the circle sits right below the header */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2000px; /* Size of the circle */
+  height: 1000px;
+  background-color: #9fcce4; /* Same color as header */
+  border-radius: 50%; /* Make it a circle */
+  z-index: 0; /* Ensure it's behind header content */
 }

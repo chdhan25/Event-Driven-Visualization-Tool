@@ -3,6 +3,7 @@ import { Upload, Button, message } from 'antd';
 import { TextInput } from 'react-native-web';
 import { initializeApp } from 'firebase/app';
 import PreviewScreen from '../PreviewScreen';
+import CloudFileSelectionScreen from '../CloudFileSelectionScreen';
 /*import {
   getStorage,
   ref,
@@ -12,16 +13,10 @@ import PreviewScreen from '../PreviewScreen';
 } from 'firebase/storage';*/
 import {
   firebaseConfig,
-  listCSourceCodeFiles,
-  listCPlusPlusSourceCodeFiles,
-  listDirectories,
-  uploadCSourceCodeFile,
-  uploadCPlusPlusSourceCodeFile,
-  downloadCSourceCodeFile,
-  downloadCPlusPlusSourceCodeFile,
-  downloadDirectory,
+  listFlowcharts,
   uploadParsedCode,
-  uploadDirectory,
+  downloadParsedCode,
+  findFlowcharts,
 } from '../../ApplicationLogic/firebase';
 import { parseCCode } from '../../ApplicationLogic/parsing/parser';
 import { parseCppCode } from '../../ApplicationLogic/parsing/cppParser';
@@ -30,6 +25,8 @@ import './Upload.css'; // Import the external CSS file
 import { generateFlowchartData } from '../../ApplicationLogic/flowchart/flowchartUtils';
 import '../../Screens/UploadScreen/Upload.css';
 import DropZone from '../../components/DropZone';
+import uploadScreenTooltip from '../../components/HelpTooltips/UploadScreenTooltip';
+import { CloudDownloadOutlined, FileSearchOutlined, ForwardOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 
 export default function UploadScreen() {
   // State Variables
@@ -39,15 +36,8 @@ export default function UploadScreen() {
     'Upload and select a source code file to view its contents here.'
   );
   const [uploadFileArray, setuploadFileArray] = useState(new Array());
-  const [uploadDirectoryTitle, setUploadDirectoryTitle] =
-    useState('uploadFolder');
-  const [downloadDirectoryTitle, setDownloadDirectoryTitle] =
-    useState('downloadFolder');
-  const [uploadfileTitle, setUploadFileTitle] = useState('Code');
-  const [downloadFileTitle, setDownloadFileTitle] = useState('Old_Code');
-  const [parsedCodeTitle, setParsedCodeTitle] = useState('Flowchart');
-  const [codePreviewTextColor, setCodePreviewTextColor] = useState('black');
-  const [codePreviewBGColor, setCodePreviewBGColor] = useState('white');
+  const [uploadFlowchartTitle, setUploadFlowchartTitle] = useState('');
+  const [downloadFlowchartTitle, setDownloadFlowchartTitle] = useState('');
   const [parsedData, setParsedData] = useState(null);
   const [flowchartData, setFlowchartData] = useState(null);
   const [uploadedCode, setUploadedCode] = useState(''); // State to store the uploaded code
@@ -55,11 +45,26 @@ export default function UploadScreen() {
   const [cppFiles, setCppFiles] = useState(new Array());
   const [parsedC, setParsedC] = useState(new Array());
   const [parsedCpp, setParsedCpp] = useState(new Array());
+  const [cloudList, setCloudList] = useState(new Array());
+ 
 
   const [dropzoneFileList, setDropzoneFileList] = useState(new Array());
 
   const navigation = useNavigation();
   const app = initializeApp(firebaseConfig);
+
+  useEffect(() => {
+    //Add help button to header
+    navigation.setOptions({
+      headerRight: () => (
+        <Button 
+        className='upload-buttons'
+        icon={<QuestionCircleTwoTone/>}
+        onClick={() => {uploadScreenTooltip()}}
+        >Help</Button>
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     if (parsedData) {
@@ -70,14 +75,23 @@ export default function UploadScreen() {
     }
   }, [parsedData]);
 
+  const handleCloudFileSelection = () => {
+    navigation.navigate('CloudFileSelectionScreen', {});
+  }
+
   const handleContinue = () => {
     if (flowchartData) {
-      navigation.navigate('VisualizationSelector', {
+      console.log("This is uploaded code"+ uploadedCode)
+      // navigation.navigate('VisualizationSelector', {
+      //   flowchartData: flowchartData,
+      //   uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
+      // });
+      navigation.navigate('FlowchartScreen', {
         flowchartData: flowchartData,
-        uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
+        uploadedCode: uploadedCode
       });
     } else {
-      message.warning('Please upload a valid code file before continuing.');
+      message.warning('Please upload a valid code file or download a valid flowchart before continuing.');
     }
   };
   const handlePreview = () => {
@@ -87,7 +101,7 @@ export default function UploadScreen() {
         flowchartData: flowchartData,
         uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
         dropzoneFileList: dropzoneFileList,
-        parsedData: parsedData,
+        parsedData: parsedData, //
       });
     } else {
       message.warning('Please upload a valid code file before continuing.');
@@ -229,6 +243,9 @@ return (
       fileArray = {dropzoneFileList}
       fileArraySetter = {setDropzoneFileList}
       onDrop = {handleDropzoneUpload}
+      onFlowchartDataChange={setFlowchartData} // Pass the callback to update flowchart data
+      onPreviewTextChange={setCodePreviewText} // Pass the callback to update
+
     >
       {({
           getRootProps,
@@ -318,92 +335,61 @@ return (
 
       {/* Code Options and List Code Sections */}
       {/* <div id="list-code">
-      <h2>List Source Code Files Saved on Cloud</h2>
-        <Button className="upload-buttons" onClick={() => listDirectories()}>
-          List Directories
+      <h2>List Flowchart Visualizations Saved on Cloud</h2>
+        <Button className="upload-buttons" onClick={() => listFlowcharts()}>
+          List Flowcharts
         </Button>
-
-        
-        <Button className="upload-buttons" onClick={() => listCSourceCodeFiles()}>
-          List C Source Files
-        </Button>
-        <Button className="upload-buttons" onClick={() => listCPlusPlusSourceCodeFiles()}>
-          List C++ Source Files
-        </Button>
-        </div> */}
+      </div> */}
 
       {/* Download Code Section */}
-      {/* <div id="download-code">
-        <h2>Download Source Files</h2>
-        <p>
-          Input name of source code file to be downloaded and displayed in the code
-          preview pane below. File name must include ".c" or ".cpp" extension.
-        </p>
+      <div id="download-code">
+        <h2>Download Flowchart Data</h2>
+        <Button
+          className="upload-buttons"
+          icon={<CloudDownloadOutlined/>}
+          onClick={() => {
+            handleCloudFileSelection();
+          }}
+        >
+          View Flowcharts Saved on Cloud
+        </Button>
+
+        {/* <Button 
+        className="upload-buttons"
+        onClick={() => {console.log("Preview: " + flowchartData)}}
+        >
+          Preview Flowchart Data
+        </Button> */}
+      </div>
+
+      {/* Save Code Section */}
+      {/* <div id="save-code">
+        <h2>Save Current Parsed Data to Cloud as a flowchart</h2>
+        <p>Input name of flowchart to be saved to cloud</p>
         <input
-          value={downloadFileTitle}
-          onChange={(e) => setDownloadFileTitle(e.target.value)}
+          value={uploadFlowchartTitle}
+          onChange={(e) => setUploadFlowchartTitle(e.target.value)}
         />
         <Button
           className="upload-buttons"
           onClick={() => {
-            const reply = '';
-            downloadCSourceCodeFile(downloadFileTitle, reply);
-            setCodePreviewText(reply);
+            if (flowchartData) {
+              if (uploadFlowchartTitle != '') {
+                const parsed = JSON.stringify(flowchartData);
+                console.log('Parsed Data:', parsed);
+                uploadParsedCode(uploadFlowchartTitle, parsed);
+              } else {
+                message.error("Please input a name for the flowchart to be uploaded");
+              }
+              
+            } else {
+              message.error("Please upload a valid code file or download a valid flowchart before continuing.");
+            }
+            
           }}
         >
-          Download C Source Code File
+          Save Flowchart Data
         </Button>
-        <Button
-          className="upload-buttons"
-          onClick={() => {
-            const reply = '';
-            downloadCPlusPlusSourceCodeFile(downloadFileTitle, reply);
-            setCodePreviewText(reply);
-          }}
-        >
-          Download C++ Source Code File
-        </Button>
-        <p>Input name of directory to be downloaded from cloud</p>
-      <input
-        value={downloadDirectoryTitle}
-        onChange={(e) => setDownloadDirectoryTitle(e.target.value)}
-      />
-      <Button
-        className="upload-buttons"
-        onClick={() => downloadDirectory(downloadDirectoryTitle, uploadFileArray)}
-      >
-        Download Directory
-      </Button>
-      </div> */}
-
-      {/* Save Code Section */}
-      {/* <div id="save-code">
-      <h2>Save Current Code to Cloud</h2>
-      <p>Input name of directory to be saved to cloud</p>
-      <input
-        value={uploadDirectoryTitle}
-        onChange={(e) => setUploadDirectoryTitle(e.target.value)}
-      />
-      <Button
-        className="upload-buttons"
-        onClick={() => uploadDirectory(uploadDirectoryTitle, uploadFileArray)}
-      >
-        Save Directory
-      </Button>
-        
-        <Button
-          className="upload-buttons"
-          onClick={() => uploadCSourceCodeFile(uploadfileTitle, codePreviewText)}
-        >
-          Save Current Code Preview Text as .c File
-        </Button>
-        <Button
-          className="upload-buttons"
-          onClick={() => uploadCPlusPlusSourceCodeFile(uploadfileTitle, codePreviewText)}
-        >
-          Save Current Code Preview Text as .cpp File
-        </Button>
-        
       </div> */}
     </div>
     {/* <p>
@@ -425,7 +411,10 @@ return (
       Reparse Current Code and Upload Parsed Code to Cloud
     </Button> */}
     <Button
-      className="continue-button"
+      // className="continue-button"
+      className={flowchartData ? "enabled-button" : "disabled-button"}
+      icon={<ForwardOutlined/>}
+      iconPosition='end'
       type="primary"
       onClick={handleContinue}
       style={{ marginTop: '20px' }}
@@ -433,10 +422,11 @@ return (
       Continue
     </Button>
     <Button
-      className="preview-button"
+      className={flowchartData ? "enabled-button" : "disabled-button"}
+      icon={<FileSearchOutlined/>}
+      iconPosition='end'
       type="primary"
       onClick={handlePreview}
-      style={{ marginTop: '20px' }}
     >
       Preview Repository
     </Button>
