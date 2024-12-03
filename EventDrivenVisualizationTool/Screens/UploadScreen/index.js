@@ -56,6 +56,8 @@ export default function UploadScreen() {
   useEffect(() => {
     //Add help button to header
     navigation.setOptions({
+      headerTitle: "Event Driven Visualization Tool",
+      headerTitleAlign: "center",
       headerRight: () => (
         <Button 
         className='upload-buttons'
@@ -233,10 +235,7 @@ export default function UploadScreen() {
 // ****************** This is what actually shows up on the screen ******************************************
 return (
   <div className="page-container">
-    <div className="header" id="heading">
-      <h1>Event Driven Visualization Tool</h1>
-    </div>
-
+   
     {/* Dropzone Component */}
     <DropZone 
       className = "dropzone-container"
@@ -275,7 +274,8 @@ return (
 
     </DropZone>
 
-    
+
+    <h1 className='or'> OR</h1>
         
    
     {/*  **uncomment and delete this text when need to test using this button** <Button
@@ -343,7 +343,7 @@ return (
 
       {/* Download Code Section */}
       <div id="download-code">
-        <h2>Download Flowchart Data</h2>
+        <h2>View Saved Flowcharts</h2>
         <Button
           className="upload-buttons"
           icon={<CloudDownloadOutlined/>}
@@ -351,7 +351,7 @@ return (
             handleCloudFileSelection();
           }}
         >
-          View Flowcharts Saved on Cloud
+          Download From Cloud
         </Button>
 
         {/* <Button 

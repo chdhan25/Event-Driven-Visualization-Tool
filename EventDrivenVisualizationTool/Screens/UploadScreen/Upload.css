@@ -1,6 +1,8 @@
 /* Upload.css */
 
 /* App.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+
 
 /* Style for the entire page container */
 .page-container {
@@ -12,8 +14,10 @@
   justify-content: flex-start;
   align-items: center;
   overflow-y: auto;
-  font-family:sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
+
+
 
 /* Header section style */
 .header {
@@ -103,14 +107,15 @@ input {
 #download-code,
 #save-code {
   flex: 1; /* Allow them to take up equal space */
-  background-color: white;
+  background-color: #DDDDDD;
   margin: 10px; /* Add margin for spacing between them */
   flex-direction: column;
   align-items: center; /* Center elements horizontally */
   justify-content: center; /* Center elements vertically */
   text-align: center; /* Center the text inside */
-  border: 2px solid black;
-  border-radius: 10px;
+  border-radius: 15px;
+  box-shadow: offset-x offset-y blur-radius spread-radius color;
+ 
   padding: 20px;
   margin: 10px;
   z-index: 2;
@@ -254,15 +259,3 @@ p {
   background: #fafafa;
 }
 
-.header::before {
-  content: '';
-  position: absolute;
-  bottom: 300px; /* Adjust so the circle sits right below the header */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2000px; /* Size of the circle */
-  height: 1000px;
-  background-color: #9fcce4; /* Same color as header */
-  border-radius: 50%; /* Make it a circle */
-  z-index: 0; /* Ensure it's behind header content */
-}
