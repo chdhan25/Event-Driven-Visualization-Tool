@@ -9,61 +9,10 @@ This tool can automatically convert C and C++ source code files into flowcharts 
 * Event Driven Visualization
 * Save Visualization to Firebase
 * Retreive Visualization from Firebase
+* Visualizations saved to Firebase support version control.
 
 ### Known Issues
-*
-*
-*
+* Whenever a directory is uploaded on the application's upload page, the app's internal file list is reset. In other words, you cannot upload one folder of source code files, and then add to the internal filelist by uploading a second folder without deleting the files received from the first upload. All of the desired upload files need to be placed within one directory (all source code files placed within directories that are themselves stored in the upload directory are still uploaded).
 
 ### Bugs that have occured throughout
-*
-*
-*
-
-## Installation Guide
-
-
-## Version 0.4.0
-### New Features
-* Added new dropzone uploader. This component can more efficiently support directory uploads containing a large number of files.
-* Added color coding to Flowchart Visualization Nodes.
-* Various UI updates (we have removed the directory cloud functionality, so we can focus on saving flowchart data to the cloud instead of source code files).
-* Added Cloud Support for Listing, Uploading, and Downloading Flowchart Data.
-### Bug Fixes
-* Upload support for larger code repositories has been improved.
-### Known Issues
-* We need to add a legend for color-coded nodes.
-
-## Version 0.3.0
-### New Features
-* Support for Directories: Users can now upload an entire directory of files from their device to the upload screen. In addition, users can now upload an entire directory of files from the application to the cloud, and download a directory of files from the cloud to the application.
-* Support for C++ Files: Our application now has the ability to parse C++ source code files. Files with the .cpp extension can be converted into a flowchart visualization.
-* Improved UI: The upload screen now has a cleaner and more streamlined interface. This should make it easier for users to understand this screen.
-### Bug Fixes
-* Fixed issues related to downloading files from cloud. This feature should work as intended now.
-### Known Issues
-* The tool has been found to crash when uploading larger directories (such as entire repositories) to the upload screen.
-* We plan on reducing the number of features that print important information to the browser console. This important information should instead be displayed within the application itself in either a popup window or a separate screen.
-
-## Version 0.2.0
-### New Features
-* Added functionality to list the names of source code files currently stored on the cloud database.
-* Added functionality to save flowcharts to cloud. Right now these flowcharts are represented as Strings, and the user can only save visualizations, not load them from the cloud.
-* Added a screen allowing the user to select the type of visualization to use with their parsed code. Right now, only the flowchart option is available.
-* Added the ability to edit the code while looking at a flowchart, and have the flowchart update to reflect the updated code.
-* Added the ability to pull up information on flowchart nodes, and see which line of the code generated each node.
-### Bug Fixes
-* Support added for '.cpp' files.
-### Known Issues
-* The download functionality is supposed to download the text for a source code file from the cloud, log the file's text in the browser console, and copy the downloaded text into the code preview pane. Right now, only the console logging function is working.
-
-## Version 0.1.0
-### New Features
-* Added functionality to upload '.c' source code files to cloud storage supported by Google Firebase.
-* Create a flowchart based on user uploaded '.c' source code file
-* Added pop-up messages detailing successful upload
-### Bug Fixes
-* The code preview shown upon uploading a source code file to the application has been improved. The code now appears in an editable code preview pane instead of an alert box.
-* The divider containing the upload dragger will now grow and shrink appropriately when code files are added to or removed from the upload list.
-### Known Issues
-* The cloud storage upload functionality currently supports only '.c' files. The final version of the tool should be able to support '.c' and '.cpp' files
+* The app used to crash whenever a very large group of files was uploaded. The app can now better handle larger uploads, but large file lists still cause slowdown.
