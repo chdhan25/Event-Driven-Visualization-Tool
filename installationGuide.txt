@@ -1,0 +1,6 @@
+1. Install the latest version of Node JS.
+2. Navigate to the project's root directory (JIB-4116) in your terminal.
+3. Enter the command "npm build" to compile.
+4. Enter the command "npm start" to create a local server.
+5. Within the terminal, you can press the W key to open the app in your default web browser.
+6. To shut down the local server, go to the terminal where you entered the "npm start" command, then use the key combination "CTRL + C".
