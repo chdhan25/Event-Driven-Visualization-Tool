@@ -10,9 +10,9 @@ const extractISRDetails = (line) => {
   const armMatch = line.match(/void\s+(\w+_Handler)\s*\(.*\)/);
 
   if (avrMatch) {
-    return { type: 'AVR', name: avrMatch[1].trim() };
+    return { type: 'AVR', name: avrMatch[1].trim(), line: line };
   } else if (armMatch) {
-    return { type: 'ARM', name: armMatch[1].trim() };
+    return { type: 'ARM', name: armMatch[1].trim(), line: line };
   }
   return { type: 'Unknown', name: 'Unknown' };
 };
@@ -27,12 +27,14 @@ export const parseCCode = (code) => {
     } else if (line.includes('=')) {
       parsedData.flowchartElements.push({
         type: 'Process',
-        description: `Assignment: ${line.trim()}`,
+        description: `Assignment:`,
+        line: line,
       });
     } else if (line.includes('return')) {
       parsedData.flowchartElements.push({
         type: 'End',
         description: 'Return Statement',
+        line: line,
       });
     }
   });

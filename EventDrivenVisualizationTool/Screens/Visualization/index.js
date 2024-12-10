@@ -27,6 +27,7 @@ const Visualization = ({ flowchartData, parsedData }) => {
 
 
   const onNodeClick = (event, node) => {
+    console.log("this is the line:" + JSON.stringify(node, null, 2))
     setSelectedNodeLine(node.line); // Set the clicked node's line
     setIsModalVisible(true); // Show the modal
     // Perform any necessary actions when a node is clicked
