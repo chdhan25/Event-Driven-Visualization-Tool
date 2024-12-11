@@ -50,7 +50,7 @@ const PreviewScreen = (props) => {
    const handleContinue = () => {
      if (flowchartData) {
        console.log(flowchartData);
-       navigation.navigate('VisualizationSelector', {
+       navigation.navigate('FlowchartScreen', {
          flowchartData: flowchartData,
          uploadedCode: previewText, // This is the file content to show in CodeEditor
        });

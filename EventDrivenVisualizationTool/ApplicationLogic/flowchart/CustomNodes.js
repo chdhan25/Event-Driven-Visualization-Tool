@@ -7,9 +7,9 @@ export const ISRNode = ({ data }) => (
       padding: '10px',
       border: '1px solid black',
       background: '#f0f8ff',
-      wordWrap: 'break-word',  // Allow text to wrap
-      whiteSpace: 'normal',    // Ensure text breaks correctly
-      overflow: 'hidden',      // Hide any overflowing content
+      // wordWrap: 'break-word',  // Allow text to wrap
+      // whiteSpace: 'normal',    // Ensure text breaks correctly
+      // overflow: 'hidden',      // Hide any overflowing content
     }}
   >
     <strong>{data.label}</strong>

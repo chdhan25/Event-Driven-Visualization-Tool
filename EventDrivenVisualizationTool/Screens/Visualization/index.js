@@ -4,7 +4,9 @@ import 'reactflow/dist/style.css';
 import '../../Screens/UploadScreen/Upload.css';
 
 
-import { Modal } from 'antd';
+
+import { Modal, Space } from 'antd';
+import { SpaceCompactItemContext } from 'antd/es/space/Compact';
 
 const Visualization = ({ flowchartData, parsedData }) => {
   console.log('Flowchart Nodes:', flowchartData.nodes);
@@ -53,12 +55,15 @@ const Visualization = ({ flowchartData, parsedData }) => {
         <Background />
       </ReactFlow>
       <Modal
+
         title="Node Details"
         open={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
-        <p><strong>Line:</strong> {selectedNodeLine}</p>
+        {/* <Space style={{justifyContent: 'left'}} width={750}> */}
+        <p><strong>Line:  </strong> {selectedNodeLine} </p>
+        {/* </Space> */}
       </Modal>
     </div>
   );
