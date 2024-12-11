@@ -23,18 +23,21 @@ const isISRLineCpp = (line) => {
         type: 'AVR',
         name: avrMatch[1].trim(),
         connections: [], // Placeholder for connections
+        line: line
       };
     } else if (armMatch) {
       return {
         type: 'ARM',
         name: armMatch[1].trim(),
         connections: [], // Placeholder for connections
+        line: line
       };
     } else if (extiMatch) {
       return {
         type: 'ARM',
         name: extiMatch[1].trim(), // Handle EXTI IRQ handlers
         connections: [], // Placeholder for connections
+        line: line
       };
     } else {
       return { type: 'Unknown', name: 'Unknown', connections: [] };

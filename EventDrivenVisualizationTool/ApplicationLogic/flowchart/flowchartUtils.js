@@ -10,6 +10,7 @@ export function generateFlowchartData(parsedData) {
   // Process ISR nodes
   if (parsedData && parsedData.isrs) {
     parsedData.isrs.forEach((isr, index) => {
+      console.log("This is the isr object: " + JSON.stringify(isr, null, 2))
       const nodeId = `isr-${index}`;
       nodes.push({
         id: nodeId,
@@ -17,7 +18,9 @@ export function generateFlowchartData(parsedData) {
         data: { label: `${isr.type} - ${isr.name}` },
         position: { x: isrStartX, y: currentYISR },
         style: { backgroundColor: 'lightblue', color: 'black' },
+        line: isr.line
       });
+      console.log(nodes)
       currentYISR += nodeSpacingY; // Position the next ISR node
     });
   }
@@ -25,6 +28,7 @@ export function generateFlowchartData(parsedData) {
   // Process flowchart elements (operations, assignments, etc.)
   if (parsedData && parsedData.flowchartElements) {
     parsedData.flowchartElements.forEach((element, index) => {
+      console.log("This is the element object: " + JSON.stringify(element, null, 2))
       const nodeId = `flowchart-${index}`;
       let style;
 
@@ -43,6 +47,7 @@ export function generateFlowchartData(parsedData) {
         data: { label: element.description },
         position: { x: functionStartX, y: currentYFunction },
         style,
+        line: element.line
       });
 
       if (index > 0) {

@@ -90,7 +90,7 @@ export default function UploadScreen() {
       // });
       navigation.navigate('FlowchartScreen', {
         flowchartData: flowchartData,
-        uploadedCode: uploadedCode
+        uploadedCode: codePreviewText, // This is the file content to show in CodeEditor
       });
     } else {
       message.warning('Please upload a valid code file or download a valid flowchart before continuing.');
